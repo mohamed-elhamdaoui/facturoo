@@ -152,7 +152,7 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('turbo:load', function() {
     const searchInput = document.getElementById('searchInput');
     const tabs = document.querySelectorAll('.filter-tab');
     const rows = document.querySelectorAll('.product-row');
@@ -251,6 +251,13 @@ document.addEventListener('DOMContentLoaded', function() {
             if(allTab) allTab.click();
         });
     }
+});
+
+// Clean up event listeners when Turbo caches the page,
+// preventing duplicate listeners on back-navigation
+document.addEventListener('turbo:before-cache', function() {
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) searchInput.value = '';
 });
 </script>
 @endsection
