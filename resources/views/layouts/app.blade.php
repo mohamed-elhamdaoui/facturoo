@@ -137,7 +137,7 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('turbo:load', function() {
             // User Menu Dropdown
             const userBtn = document.getElementById('user-menu-btn');
             const userDropdown = document.getElementById('user-menu-dropdown');
