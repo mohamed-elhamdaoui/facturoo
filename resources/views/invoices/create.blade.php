@@ -50,12 +50,12 @@
                                         </template>
                                     </select>
                                 </td>
-                                <td class="p-3 text-gray-600" x-text="'$' + item.price.toFixed(2)"></td>
+                                <td class="p-3 text-gray-600" x-text="item.price.toFixed(2) + ' DH'"></td>
                                 <td class="p-3">
                                     <input type="number" x-model.number="item.quantity" :name="'items['+index+'][quantity]'" min="1" @input="updateSubtotal(item)" required
                                         class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
                                 </td>
-                                <td class="p-3 text-right font-medium text-gray-800" x-text="'$' + item.subtotal.toFixed(2)"></td>
+                                <td class="p-3 text-right font-medium text-gray-800" x-text="item.subtotal.toFixed(2) + ' DH'"></td>
                                 <td class="p-3 text-center">
                                     <button type="button" @click="removeItem(index)" x-show="items.length > 1" class="text-red-500 hover:text-red-700" title="Remove">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -74,7 +74,7 @@
                 <div class="w-1/3 bg-gray-50 rounded-lg border border-gray-200 p-4">
                     <div class="flex justify-between items-center">
                         <span class="text-gray-600 font-medium">Grand Total:</span>
-                        <span class="text-2xl font-bold text-gray-800" x-text="'$' + grandTotal.toFixed(2)"></span>
+                        <span class="text-2xl font-bold text-gray-800" x-text="grandTotal.toFixed(2) + ' DH'"></span>
                     </div>
                 </div>
             </div>
