@@ -8,3 +8,4 @@ Route::get('/', function () {
 });
 
 Route::resource('products', ProductController::class);
+Route::resource('invoices', App\Http\Controllers\InvoiceController::class)->except(['edit', 'update']);
