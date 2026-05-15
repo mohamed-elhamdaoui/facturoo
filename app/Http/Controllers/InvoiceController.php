@@ -52,7 +52,7 @@ class InvoiceController extends Controller
         $invoice->update(['total' => $grandTotal]);
 
         return redirect()->route('invoices.show', $invoice)
-                         ->with('success', 'Invoice created successfully.');
+                         ->with('success', 'Facture créée avec succès.');
     }
 
     public function show(Invoice $invoice)
@@ -71,6 +71,6 @@ class InvoiceController extends Controller
     public function destroy(Invoice $invoice)
     {
         $invoice->delete();
-        return redirect()->route('invoices.index')->with('success', 'Invoice deleted successfully.');
+        return redirect()->route('invoices.index')->with('success', 'Facture supprimée avec succès.');
     }
 }
