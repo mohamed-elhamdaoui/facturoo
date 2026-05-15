@@ -58,10 +58,12 @@
             
             <input type="file" id="image" name="image" accept="image/*" class="hidden" x-ref="photo"
                 x-on:change="
-                    photoName = $refs.photo.files[0].name;
+                    const file = $refs.photo.files[0];
+                    if (!file) return;
+                    photoName = file.name;
                     const reader = new FileReader();
                     reader.onload = (e) => { photoPreview = e.target.result; };
-                    reader.readAsDataURL($refs.photo.files[0]);
+                    reader.readAsDataURL(file);
                 ">
                 
             <div class="mt-2 flex items-center gap-5">
