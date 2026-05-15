@@ -7,6 +7,7 @@ use App\Models\Invoice;
 use App\Models\InvoiceItem;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class InvoiceController extends Controller
@@ -19,37 +20,41 @@ class InvoiceController extends Controller
 
     public function create()
     {
-        $products = Product::orderBy('name')->get();
+        $products = Product::orderBy('category')->orderBy('name')->get();
         return view('invoices.create', compact('products'));
     }
 
     public function store(StoreInvoiceRequest $request)
     {
         $data = $request->validated();
-        
-        $invoice = Invoice::create([
-            'customer_name' => $data['customer_name'],
-            'total' => 0
-        ]);
 
-        $grandTotal = 0;
-
-        foreach ($data['items'] as $itemData) {
-            $product = Product::find($itemData['product_id']);
-            $subtotal = $product->price * $itemData['quantity'];
-            
-            InvoiceItem::create([
-                'invoice_id' => $invoice->id,
-                'product_id' => $product->id,
-                'quantity' => $itemData['quantity'],
-                'unit_price' => $product->price,
-                'subtotal' => $subtotal
+        $invoice = DB::transaction(function () use ($data) {
+            $invoice = Invoice::create([
+                'customer_name' => $data['customer_name'],
+                'total'         => 0,
             ]);
 
-            $grandTotal += $subtotal;
-        }
+            $grandTotal = 0;
 
-        $invoice->update(['total' => $grandTotal]);
+            foreach ($data['items'] as $itemData) {
+                $product  = Product::findOrFail($itemData['product_id']);
+                $subtotal = $product->price * $itemData['quantity'];
+
+                InvoiceItem::create([
+                    'invoice_id' => $invoice->id,
+                    'product_id' => $product->id,
+                    'quantity'   => $itemData['quantity'],
+                    'unit_price' => $product->price,
+                    'subtotal'   => $subtotal,
+                ]);
+
+                $grandTotal += $subtotal;
+            }
+
+            $invoice->update(['total' => $grandTotal]);
+
+            return $invoice;
+        });
 
         return redirect()->route('invoices.show', $invoice)
                          ->with('success', 'Facture créée avec succès.');
