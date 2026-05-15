@@ -19,13 +19,13 @@
         [x-cloak] { display: none !important; }
     </style>
 </head>
-<body class="h-full flex overflow-hidden text-slate-800" x-data="{ sidebarOpen: false, userMenuOpen: false }">
+<body class="h-full flex overflow-hidden text-slate-800">
 
     <!-- Mobile sidebar backdrop -->
-    <div x-show="sidebarOpen" x-transition.opacity class="fixed inset-0 z-40 bg-slate-900/80 backdrop-blur-sm lg:hidden" @click="sidebarOpen = false" x-cloak></div>
+    <div id="mobile-sidebar-backdrop" class="hidden fixed inset-0 z-40 bg-slate-900/80 backdrop-blur-sm lg:hidden transition-opacity duration-300"></div>
 
     <!-- Sidebar -->
-    <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'" class="fixed inset-y-0 left-0 z-50 w-72 bg-white border-r border-slate-200 transition-transform duration-300 lg:translate-x-0 lg:static lg:w-64 flex flex-col">
+    <aside id="mobile-sidebar" class="-translate-x-full fixed inset-y-0 left-0 z-50 w-72 bg-white border-r border-slate-200 transition-transform duration-300 lg:translate-x-0 lg:static lg:w-64 flex flex-col">
         
         <!-- Logo Area -->
         <div class="h-16 flex items-center px-6 border-b border-slate-100">
@@ -70,7 +70,7 @@
         <!-- Top Navbar -->
         <header class="bg-white border-b border-slate-200 h-16 flex items-center justify-between px-4 sm:px-6 lg:px-8">
             <!-- Mobile menu button -->
-            <button @click="sidebarOpen = true" class="lg:hidden text-slate-500 hover:text-slate-700 focus:outline-none">
+            <button id="mobile-menu-btn" type="button" class="lg:hidden text-slate-500 hover:text-slate-700 focus:outline-none">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
             </button>
 
@@ -79,8 +79,8 @@
 
             <!-- Right nav (User profile) -->
             <div class="flex items-center ml-auto">
-                <div class="relative" @click.away="userMenuOpen = false">
-                    <button @click="userMenuOpen = !userMenuOpen" class="flex items-center gap-2 focus:outline-none rounded-full ring-2 ring-transparent hover:ring-indigo-100 transition-all p-1">
+                <div class="relative">
+                    <button id="user-menu-btn" type="button" class="flex items-center gap-2 focus:outline-none rounded-full ring-2 ring-transparent hover:ring-indigo-100 transition-all p-1">
                         <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-sm">
                             {{ substr(Auth::user()->name ?? 'Admin', 0, 1) }}
                         </div>
@@ -89,7 +89,7 @@
                     </button>
 
                     <!-- Dropdown -->
-                    <div x-show="userMenuOpen" x-transition.enter="transition ease-out duration-100" x-transition.enter-start="transform opacity-0 scale-95" x-transition.enter-end="transform opacity-100 scale-100" x-transition.leave="transition ease-in duration-75" x-transition.leave-start="transform opacity-100 scale-100" x-transition.leave-end="transform opacity-0 scale-95" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-slate-100 py-1 z-50" x-cloak>
+                    <div id="user-menu-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-slate-100 py-1 z-50">
                         <form method="POST" action="{{ Route::has('logout') ? route('logout') : '#' }}">
                             @csrf
                             <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-red-600 transition-colors">
@@ -133,5 +133,52 @@
         </main>
 
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // User Menu Dropdown
+            const userBtn = document.getElementById('user-menu-btn');
+            const userDropdown = document.getElementById('user-menu-dropdown');
+            
+            if (userBtn && userDropdown) {
+                userBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    userDropdown.classList.toggle('hidden');
+                });
+                
+                document.addEventListener('click', function(e) {
+                    if (!userBtn.contains(e.target) && !userDropdown.contains(e.target)) {
+                        userDropdown.classList.add('hidden');
+                    }
+                });
+            }
+
+            // Mobile Sidebar
+            const mobileBtn = document.getElementById('mobile-menu-btn');
+            const sidebar = document.getElementById('mobile-sidebar');
+            const backdrop = document.getElementById('mobile-sidebar-backdrop');
+            
+            function closeSidebar() {
+                if(sidebar && backdrop) {
+                    sidebar.classList.remove('translate-x-0');
+                    sidebar.classList.add('-translate-x-full');
+                    backdrop.classList.add('hidden');
+                }
+            }
+            
+            function openSidebar() {
+                if(sidebar && backdrop) {
+                    sidebar.classList.remove('-translate-x-full');
+                    sidebar.classList.add('translate-x-0');
+                    backdrop.classList.remove('hidden');
+                }
+            }
+            
+            if (mobileBtn && backdrop) {
+                mobileBtn.addEventListener('click', openSidebar);
+                backdrop.addEventListener('click', closeSidebar);
+            }
+        });
+    </script>
 </body>
 </html>
