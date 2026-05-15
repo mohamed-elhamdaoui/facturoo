@@ -36,9 +36,9 @@
                 <div class="invoice-id">#INV-{{ str_pad($invoice->id, 5, '0', STR_PAD_LEFT) }}</div>
             </td>
             <td class="company-details">
-                <h2 class="company-name">Facturo Inc.</h2>
-                <div>123 Business Road</div>
-                <div>Tech City, TX 75001</div>
+                <h2 class="company-name">Your Company Name</h2>
+                <div>123 Your Address Here</div>
+                <div>Your City, ZIP</div>
             </td>
         </tr>
     </table>
@@ -69,9 +69,9 @@
             @foreach($invoice->items as $item)
             <tr>
                 <td><strong>{{ $item->product->name }}</strong></td>
-                <td class="text-center">${{ number_format($item->unit_price, 2) }}</td>
+                <td class="text-center">{{ number_format($item->unit_price, 2) }} DH</td>
                 <td class="text-center">{{ $item->quantity }}</td>
-                <td class="text-right"><strong>${{ number_format($item->subtotal, 2) }}</strong></td>
+                <td class="text-right"><strong>{{ number_format($item->subtotal, 2) }} DH</strong></td>
             </tr>
             @endforeach
         </tbody>
@@ -80,7 +80,7 @@
     <div class="total-container">
         <div class="total-box">
             <div class="total-label">Total:</div>
-            <div class="total-amount">${{ number_format($invoice->total, 2) }}</div>
+            <div class="total-amount">{{ number_format($invoice->total, 2) }} DH</div>
         </div>
     </div>
 
