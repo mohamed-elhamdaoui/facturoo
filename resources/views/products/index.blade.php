@@ -33,7 +33,7 @@
                     @endif
                 </td>
                 <td class="p-4 font-medium text-gray-800">{{ $product->name }}</td>
-                <td class="p-4 text-gray-600">${{ number_format($product->price, 2) }}</td>
+                <td class="p-4 text-gray-600">{{ number_format($product->price, 2) }} DH</td>
                 <td class="p-4 text-right space-x-2">
                     <a href="{{ route('products.edit', $product) }}" class="text-blue-600 hover:text-blue-800 font-medium text-sm">Edit</a>
                     
