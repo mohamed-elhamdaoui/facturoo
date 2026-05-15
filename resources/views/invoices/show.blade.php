@@ -23,9 +23,9 @@
             <p class="text-gray-500 mt-1">#INV-{{ str_pad($invoice->id, 5, '0', STR_PAD_LEFT) }}</p>
         </div>
         <div class="text-right">
-            <h3 class="text-xl font-bold text-blue-600 mb-1">Facturo Inc.</h3>
-            <p class="text-gray-500 text-sm">123 Business Road</p>
-            <p class="text-gray-500 text-sm">Tech City, TX 75001</p>
+            <h3 class="text-xl font-bold text-blue-600 mb-1">Your Company Name</h3>
+            <p class="text-gray-500 text-sm">123 Your Address Here</p>
+            <p class="text-gray-500 text-sm">Your City, ZIP</p>
         </div>
     </div>
 
@@ -57,9 +57,9 @@
                 <td class="py-4">
                     <p class="font-medium text-gray-800">{{ $item->product->name }}</p>
                 </td>
-                <td class="py-4 text-center text-gray-600">${{ number_format($item->unit_price, 2) }}</td>
+                <td class="py-4 text-center text-gray-600">{{ number_format($item->unit_price, 2) }} DH</td>
                 <td class="py-4 text-center text-gray-600">{{ $item->quantity }}</td>
-                <td class="py-4 text-right font-medium text-gray-800">${{ number_format($item->subtotal, 2) }}</td>
+                <td class="py-4 text-right font-medium text-gray-800">{{ number_format($item->subtotal, 2) }} DH</td>
             </tr>
             @endforeach
         </tbody>
@@ -70,7 +70,7 @@
         <div class="w-1/3">
             <div class="flex justify-between items-center font-bold text-xl text-gray-800">
                 <span>Total:</span>
-                <span>${{ number_format($invoice->total, 2) }}</span>
+                <span>{{ number_format($invoice->total, 2) }} DH</span>
             </div>
         </div>
     </div>
