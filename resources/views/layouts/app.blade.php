@@ -21,6 +21,9 @@
                 <h2 class="text-2xl font-bold text-blue-400">Facturo.</h2>
             </div>
             <nav class="flex-1 px-4 space-y-2">
+                <a href="{{ route('dashboard') }}" class="block px-4 py-3 rounded-lg hover:bg-slate-800 transition {{ request()->routeIs('dashboard') ? 'bg-slate-800 text-blue-400 font-medium' : 'text-slate-300' }}">
+                    Dashboard
+                </a>
                 <a href="{{ route('products.index') }}" class="block px-4 py-3 rounded-lg hover:bg-slate-800 transition {{ request()->routeIs('products.*') ? 'bg-slate-800 text-blue-400 font-medium' : 'text-slate-300' }}">
                     Products
                 </a>
