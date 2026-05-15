@@ -27,14 +27,37 @@
             @enderror
         </div>
         
-        <!-- Description -->
-        <div>
-            <label for="description" class="block text-sm font-medium text-slate-700">Description <span class="text-slate-400 font-normal">(Optionnel)</span></label>
-            <textarea id="description" name="description" rows="3" 
-                class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2.5 border @error('description') border-red-500 @enderror">{{ old('description', $product->description) }}</textarea>
-            @error('description')
-                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-            @enderror
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <!-- Category -->
+            <div>
+                <label for="category" class="block text-sm font-medium text-slate-700">Catégorie</label>
+                <select id="category" name="category" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2.5 border @error('category') border-red-500 @enderror">
+                    <option value="Autre" {{ old('category', $product->category) == 'Autre' ? 'selected' : '' }}>Autre</option>
+                    <option value="Couscous" {{ old('category', $product->category) == 'Couscous' ? 'selected' : '' }}>Couscous</option>
+                    <option value="Semoule & Farine" {{ old('category', $product->category) == 'Semoule & Farine' ? 'selected' : '' }}>Semoule & Farine</option>
+                    <option value="Pâtes" {{ old('category', $product->category) == 'Pâtes' ? 'selected' : '' }}>Pâtes</option>
+                </select>
+                @error('category')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
+            
+            <!-- Size -->
+            <div>
+                <label for="size" class="block text-sm font-medium text-slate-700">Taille / Poids</label>
+                <select id="size" name="size" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2.5 border @error('size') border-red-500 @enderror">
+                    <option value="" {{ old('size', $product->size) == '' ? 'selected' : '' }}>Sélectionner une taille...</option>
+                    <option value="500g" {{ old('size', $product->size) == '500g' ? 'selected' : '' }}>500g</option>
+                    <option value="750g" {{ old('size', $product->size) == '750g' ? 'selected' : '' }}>750g</option>
+                    <option value="1kg" {{ old('size', $product->size) == '1kg' ? 'selected' : '' }}>1kg</option>
+                    <option value="5kg" {{ old('size', $product->size) == '5kg' ? 'selected' : '' }}>5kg</option>
+                    <option value="10kg" {{ old('size', $product->size) == '10kg' ? 'selected' : '' }}>10kg</option>
+                    <option value="25kg" {{ old('size', $product->size) == '25kg' ? 'selected' : '' }}>25kg</option>
+                </select>
+                @error('size')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
         </div>
         
         <!-- Price -->
