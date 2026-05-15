@@ -8,11 +8,10 @@
         &larr; Back to Invoices
     </a>
     <div class="space-x-3">
-        <!-- PDF Export will go here in Step 8 -->
-        <button class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-5 py-2.5 rounded-lg font-medium transition shadow-sm inline-flex items-center" disabled title="Will be implemented in Step 8">
+        <a href="{{ route('invoices.download', $invoice) }}" class="bg-blue-50 hover:bg-blue-100 text-blue-700 px-5 py-2.5 rounded-lg font-medium transition shadow-sm inline-flex items-center">
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
             Export PDF
-        </button>
+        </a>
     </div>
 </div>
 
