@@ -7,40 +7,7 @@
     <a href="{{ route('invoices.index') }}" class="text-sm font-medium text-slate-500 hover:text-indigo-600 transition-colors">&larr; Retour aux factures</a>
 </div>
 
-<script>
-    window.invoiceProducts = @json($products);
-</script>
-<form action="{{ route('invoices.store') }}" method="POST" x-data="{
-    products: window.invoiceProducts,
-    items: [{ product_id: '', quantity: 1, price: 0, subtotal: 0 }],
-    
-    get grandTotal() {
-        return this.items.reduce((total, item) => total + (item.subtotal || 0), 0);
-    },
-    
-    updateSubtotal(item) {
-        if(!item.product_id) {
-            item.price = 0;
-            item.subtotal = 0;
-            return;
-        }
-        let product = this.products.find(p => p.id == item.product_id);
-        if(product) {
-            item.price = parseFloat(product.price);
-            item.subtotal = item.price * parseInt(item.quantity || 0);
-        }
-    },
-    
-    addItem() {
-        this.items.push({ product_id: '', quantity: 1, price: 0, subtotal: 0 });
-    },
-    
-    removeItem(index) {
-        if(this.items.length > 1) {
-            this.items.splice(index, 1);
-        }
-    }
-}">
+<form action="{{ route('invoices.store') }}" method="POST" id="invoice-form">
     @csrf
     <div class="flex flex-col lg:flex-row gap-6">
         
@@ -75,57 +42,22 @@
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
                 <div class="px-6 py-5 border-b border-slate-200 bg-slate-50 flex justify-between items-center">
                     <h3 class="text-lg font-semibold text-slate-900">Lignes de la facture</h3>
-                    <button type="button" @click="addItem()" class="text-sm font-medium text-indigo-600 hover:text-indigo-500 flex items-center transition-colors">
+                    <button type="button" onclick="addInvoiceRow()" class="text-sm font-medium text-indigo-600 hover:text-indigo-500 flex items-center transition-colors">
                         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                         Ajouter une ligne
                     </button>
                 </div>
                 
                 <div class="p-6">
-                    <div class="space-y-4">
-                        <template x-for="(item, index) in items" :key="index">
-                            <div class="flex flex-col sm:flex-row items-start gap-4 p-4 rounded-xl bg-slate-50/50 border border-slate-200 transition-colors hover:border-slate-300">
-                                <div class="flex-1 w-full">
-                                    <label class="block text-xs font-semibold tracking-wide text-slate-500 uppercase mb-1">Produit</label>
-                                    <select x-model="item.product_id" :name="'items['+index+'][product_id]'" @change="updateSubtotal(item)" required
-                                        class="block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2.5 border bg-white">
-                                        <option value="">Sélectionnez un produit...</option>
-                                        <template x-for="product in products" :key="product.id">
-                                            <option :value="product.id" x-text="product.name"></option>
-                                        </template>
-                                    </select>
-                                </div>
-                                
-                                <div class="w-full sm:w-24">
-                                    <label class="block text-xs font-semibold tracking-wide text-slate-500 uppercase mb-1">Prix U.</label>
-                                    <div class="block w-full rounded-lg border border-slate-200 bg-slate-100 sm:text-sm p-2.5 text-slate-500 text-right" x-text="item.price.toFixed(2)"></div>
-                                </div>
-
-                                <div class="w-full sm:w-24">
-                                    <label class="block text-xs font-semibold tracking-wide text-slate-500 uppercase mb-1">Qté</label>
-                                    <input type="number" x-model.number="item.quantity" :name="'items['+index+'][quantity]'" min="1" @input="updateSubtotal(item)" required
-                                        class="block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2.5 border bg-white text-center">
-                                </div>
-                                
-                                <div class="w-full sm:w-32">
-                                    <label class="block text-xs font-semibold tracking-wide text-slate-500 uppercase mb-1">Total</label>
-                                    <div class="block w-full rounded-lg border border-transparent sm:text-sm py-2.5 font-bold text-slate-900 text-right" x-text="item.subtotal.toFixed(2) + ' DH'"></div>
-                                </div>
-
-                                <div class="pt-6 sm:pl-2">
-                                    <button type="button" @click="removeItem(index)" x-show="items.length > 1" class="text-slate-400 hover:text-red-600 transition-colors" title="Supprimer la ligne">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                                    </button>
-                                </div>
-                            </div>
-                        </template>
+                    <div class="space-y-4" id="invoice-items-container">
+                        <!-- JavaScript will inject rows here -->
                     </div>
                     
                     <div class="mt-8 pt-6 border-t border-slate-200 flex justify-end">
                         <div class="w-full sm:w-64 bg-slate-50 rounded-lg p-4 border border-slate-200">
                             <div class="flex justify-between items-center text-lg">
                                 <span class="font-medium text-slate-500">Total TTC:</span>
-                                <span class="font-bold text-indigo-600" x-text="grandTotal.toFixed(2) + ' DH'"></span>
+                                <span class="font-bold text-indigo-600" id="grand-total-display">0.00 DH</span>
                             </div>
                         </div>
                     </div>
@@ -135,5 +67,112 @@
     </div>
 </form>
 
+<script>
+    const products = @json($products);
+    let rowCount = 0;
 
+    function addInvoiceRow() {
+        const container = document.getElementById('invoice-items-container');
+        const index = rowCount++;
+        
+        let productOptions = '<option value="">Sélectionnez un produit...</option>';
+        products.forEach(p => {
+            productOptions += `<option value="${p.id}" data-price="${p.price}">${p.name}</option>`;
+        });
+
+        const rowHtml = `
+            <div class="flex flex-col sm:flex-row items-start gap-4 p-4 rounded-xl bg-slate-50/50 border border-slate-200 transition-colors hover:border-slate-300 invoice-row" id="row-${index}">
+                <div class="flex-1 w-full">
+                    <label class="block text-xs font-semibold tracking-wide text-slate-500 uppercase mb-1">Produit</label>
+                    <select name="items[${index}][product_id]" onchange="updateRow(${index})" id="product-${index}" required
+                        class="block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2.5 border bg-white">
+                        ${productOptions}
+                    </select>
+                </div>
+                
+                <div class="w-full sm:w-24">
+                    <label class="block text-xs font-semibold tracking-wide text-slate-500 uppercase mb-1">Prix U.</label>
+                    <div class="block w-full rounded-lg border border-slate-200 bg-slate-100 sm:text-sm p-2.5 text-slate-500 text-right" id="price-${index}">0.00</div>
+                </div>
+
+                <div class="w-full sm:w-24">
+                    <label class="block text-xs font-semibold tracking-wide text-slate-500 uppercase mb-1">Qté</label>
+                    <input type="number" name="items[${index}][quantity]" id="qty-${index}" min="1" value="1" oninput="updateRow(${index})" required
+                        class="block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2.5 border bg-white text-center">
+                </div>
+                
+                <div class="w-full sm:w-32">
+                    <label class="block text-xs font-semibold tracking-wide text-slate-500 uppercase mb-1">Total</label>
+                    <div class="block w-full rounded-lg border border-transparent sm:text-sm py-2.5 font-bold text-slate-900 text-right subtotal-display" id="subtotal-${index}" data-value="0">0.00 DH</div>
+                </div>
+
+                <div class="pt-6 sm:pl-2">
+                    <button type="button" onclick="removeRow(${index})" class="text-slate-400 hover:text-red-600 transition-colors delete-btn" title="Supprimer la ligne">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        container.insertAdjacentHTML('beforeend', rowHtml);
+        updateDeleteButtons();
+    }
+
+    function removeRow(index) {
+        const row = document.getElementById(`row-${index}`);
+        if (row) {
+            row.remove();
+            updateGrandTotal();
+            updateDeleteButtons();
+        }
+    }
+
+    function updateRow(index) {
+        const select = document.getElementById(`product-${index}`);
+        const qtyInput = document.getElementById(`qty-${index}`);
+        const priceDisplay = document.getElementById(`price-${index}`);
+        const subtotalDisplay = document.getElementById(`subtotal-${index}`);
+
+        if (!select || !qtyInput || !priceDisplay || !subtotalDisplay) return;
+
+        const selectedOption = select.options[select.selectedIndex];
+        let price = 0;
+        
+        if (selectedOption && selectedOption.value) {
+            price = parseFloat(selectedOption.getAttribute('data-price')) || 0;
+        }
+
+        const qty = parseInt(qtyInput.value) || 0;
+        const subtotal = price * qty;
+
+        priceDisplay.textContent = price.toFixed(2);
+        subtotalDisplay.textContent = subtotal.toFixed(2) + ' DH';
+        subtotalDisplay.setAttribute('data-value', subtotal);
+
+        updateGrandTotal();
+    }
+
+    function updateGrandTotal() {
+        let total = 0;
+        document.querySelectorAll('.subtotal-display').forEach(el => {
+            total += parseFloat(el.getAttribute('data-value')) || 0;
+        });
+        document.getElementById('grand-total-display').textContent = total.toFixed(2) + ' DH';
+    }
+
+    function updateDeleteButtons() {
+        const rows = document.querySelectorAll('.invoice-row');
+        const deleteBtns = document.querySelectorAll('.delete-btn');
+        if (rows.length <= 1) {
+            deleteBtns.forEach(btn => btn.style.display = 'none');
+        } else {
+            deleteBtns.forEach(btn => btn.style.display = 'block');
+        }
+    }
+
+    // Initialize first row when DOM is ready
+    document.addEventListener('DOMContentLoaded', () => {
+        addInvoiceRow();
+    });
+</script>
 @endsection
