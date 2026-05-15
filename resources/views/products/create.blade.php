@@ -61,7 +61,7 @@
                     if (!file) return;
                     photoName = file.name;
                     const reader = new FileReader();
-                    reader.onload = (e) => { photoPreview = e.target.result; };
+                    reader.onload = (e) => { $data.photoPreview = e.target.result; };
                     reader.readAsDataURL(file);
                 ">
                 
