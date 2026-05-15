@@ -71,14 +71,32 @@
     const products = @json($products);
     let rowCount = 0;
 
+    function buildProductOptions() {
+        // Group products by category
+        const groups = {};
+        products.forEach(p => {
+            const cat = p.category || 'Autre';
+            if (!groups[cat]) groups[cat] = [];
+            groups[cat].push(p);
+        });
+
+        let html = '<option value="">Sélectionnez un produit...</option>';
+        Object.keys(groups).sort().forEach(cat => {
+            html += `<optgroup label="${cat}">`;
+            groups[cat].forEach(p => {
+                const label = p.size ? `${p.name} — ${p.size}` : p.name;
+                html += `<option value="${p.id}" data-price="${p.price}">${label}</option>`;
+            });
+            html += '</optgroup>';
+        });
+        return html;
+    }
+
     function addInvoiceRow() {
         const container = document.getElementById('invoice-items-container');
         const index = rowCount++;
         
-        let productOptions = '<option value="">Sélectionnez un produit...</option>';
-        products.forEach(p => {
-            productOptions += `<option value="${p.id}" data-price="${p.price}">${p.name}</option>`;
-        });
+        const productOptions = buildProductOptions();
 
         const rowHtml = `
             <div class="flex flex-col sm:flex-row items-start gap-4 p-4 rounded-xl bg-slate-50/50 border border-slate-200 transition-colors hover:border-slate-300 invoice-row" id="row-${index}">
@@ -170,9 +188,14 @@
         }
     }
 
-    // Initialize first row when DOM is ready
-    document.addEventListener('DOMContentLoaded', () => {
-        addInvoiceRow();
+    // Use turbo:load instead of DOMContentLoaded so the form
+    // initializes correctly after Turbo navigation (not just on first page load)
+    document.addEventListener('turbo:load', () => {
+        const container = document.getElementById('invoice-items-container');
+        if (container && container.children.length === 0) {
+            rowCount = 0;
+            addInvoiceRow();
+        }
     });
 </script>
 @endsection
