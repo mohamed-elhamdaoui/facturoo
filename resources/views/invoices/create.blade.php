@@ -7,7 +7,40 @@
     <a href="{{ route('invoices.index') }}" class="text-sm font-medium text-slate-500 hover:text-indigo-600 transition-colors">&larr; Retour aux factures</a>
 </div>
 
-<form action="{{ route('invoices.store') }}" method="POST" x-data="invoiceForm()">
+<script>
+    window.invoiceProducts = @json($products);
+</script>
+<form action="{{ route('invoices.store') }}" method="POST" x-data="{
+    products: window.invoiceProducts,
+    items: [{ product_id: '', quantity: 1, price: 0, subtotal: 0 }],
+    
+    get grandTotal() {
+        return this.items.reduce((total, item) => total + (item.subtotal || 0), 0);
+    },
+    
+    updateSubtotal(item) {
+        if(!item.product_id) {
+            item.price = 0;
+            item.subtotal = 0;
+            return;
+        }
+        let product = this.products.find(p => p.id == item.product_id);
+        if(product) {
+            item.price = parseFloat(product.price);
+            item.subtotal = item.price * parseInt(item.quantity || 0);
+        }
+    },
+    
+    addItem() {
+        this.items.push({ product_id: '', quantity: 1, price: 0, subtotal: 0 });
+    },
+    
+    removeItem(index) {
+        if(this.items.length > 1) {
+            this.items.splice(index, 1);
+        }
+    }
+}">
     @csrf
     <div class="flex flex-col lg:flex-row gap-6">
         
@@ -103,39 +136,4 @@
 </form>
 
 
-<script>
-    function invoiceForm() {
-        return {
-            products: @json($products),
-            items: [{ product_id: '', quantity: 1, price: 0, subtotal: 0 }],
-            
-            get grandTotal() {
-                return this.items.reduce((total, item) => total + (item.subtotal || 0), 0);
-            },
-            
-            updateSubtotal(item) {
-                if(!item.product_id) {
-                    item.price = 0;
-                    item.subtotal = 0;
-                    return;
-                }
-                let product = this.products.find(p => p.id == item.product_id);
-                if(product) {
-                    item.price = parseFloat(product.price);
-                    item.subtotal = item.price * parseInt(item.quantity || 0);
-                }
-            },
-            
-            addItem() {
-                this.items.push({ product_id: '', quantity: 1, price: 0, subtotal: 0 });
-            },
-            
-            removeItem(index) {
-                if(this.items.length > 1) {
-                    this.items.splice(index, 1);
-                }
-            }
-        };
-    }
-</script>
 @endsection
