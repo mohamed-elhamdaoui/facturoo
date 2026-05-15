@@ -31,7 +31,7 @@
                     <span class="bg-gray-100 text-gray-600 px-2 py-1 rounded-md text-xs">{{ $invoice->items_count }} items</span>
                 </td>
                 <td class="p-4 text-gray-500">{{ $invoice->created_at->format('M d, Y') }}</td>
-                <td class="p-4 font-semibold text-gray-800">${{ number_format($invoice->total, 2) }}</td>
+                <td class="p-4 font-semibold text-gray-800">{{ number_format($invoice->total, 2) }} DH</td>
                 <td class="p-4 text-right space-x-3">
                     <a href="{{ route('invoices.show', $invoice) }}" class="text-blue-600 hover:text-blue-800 font-medium text-sm">View</a>
                     
