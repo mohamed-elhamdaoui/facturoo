@@ -7,6 +7,7 @@ use App\Models\Invoice;
 use App\Models\InvoiceItem;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class InvoiceController extends Controller
 {
@@ -58,6 +59,13 @@ class InvoiceController extends Controller
     {
         $invoice->load(['items.product']);
         return view('invoices.show', compact('invoice'));
+    }
+
+    public function download(Invoice $invoice)
+    {
+        $invoice->load(['items.product']);
+        $pdf = Pdf::loadView('invoices.pdf', compact('invoice'));
+        return $pdf->download('invoice-' . str_pad($invoice->id, 5, '0', STR_PAD_LEFT) . '.pdf');
     }
 
     public function destroy(Invoice $invoice)
