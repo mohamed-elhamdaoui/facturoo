@@ -12,7 +12,7 @@
         </div>
         <div>
             <p class="text-sm font-medium text-gray-500 mb-1">Total Revenue</p>
-            <h4 class="text-2xl font-bold text-gray-800">${{ number_format($totalRevenue, 2) }}</h4>
+            <h4 class="text-2xl font-bold text-gray-800">{{ number_format($totalRevenue, 2) }} DH</h4>
         </div>
     </div>
 
@@ -65,7 +65,7 @@
                     </td>
                     <td class="p-4 text-gray-600">{{ $invoice->customer_name }}</td>
                     <td class="p-4 text-gray-500">{{ $invoice->created_at->format('M d, Y') }}</td>
-                    <td class="p-4 font-semibold text-gray-800 text-right">${{ number_format($invoice->total, 2) }}</td>
+                    <td class="p-4 font-semibold text-gray-800 text-right">{{ number_format($invoice->total, 2) }} DH</td>
                 </tr>
                 @empty
                 <tr>
