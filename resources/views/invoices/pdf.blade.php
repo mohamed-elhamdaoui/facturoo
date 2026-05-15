@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Invoice #INV-{{ str_pad($invoice->id, 5, '0', STR_PAD_LEFT) }}</title>
+    <title>Facture #INV-{{ str_pad($invoice->id, 5, '0', STR_PAD_LEFT) }}</title>
     <style>
         body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #333; font-size: 14px; }
         .header { width: 100%; margin-bottom: 40px; border-bottom: 2px solid #eee; padding-bottom: 20px; }
@@ -32,13 +32,13 @@
     <table class="header">
         <tr>
             <td>
-                <h1 class="title">INVOICE</h1>
+                <h1 class="title">FACTURE</h1>
                 <div class="invoice-id">#INV-{{ str_pad($invoice->id, 5, '0', STR_PAD_LEFT) }}</div>
             </td>
             <td class="company-details">
-                <h2 class="company-name">Your Company Name</h2>
-                <div>123 Your Address Here</div>
-                <div>Your City, ZIP</div>
+                <h2 class="company-name">Votre Nom d'Entreprise</h2>
+                <div>123 Adresse de l'entreprise</div>
+                <div>Code Postal, Ville</div>
             </td>
         </tr>
     </table>
@@ -46,12 +46,12 @@
     <table class="info-table">
         <tr>
             <td>
-                <div class="info-label">Billed To:</div>
+                <div class="info-label">Facturé à :</div>
                 <div class="info-value">{{ $invoice->customer_name }}</div>
             </td>
             <td class="text-right">
-                <div class="info-label">Date of Issue:</div>
-                <div class="info-value">{{ $invoice->created_at->format('F d, Y') }}</div>
+                <div class="info-label">Date d'émission :</div>
+                <div class="info-value">{{ $invoice->created_at->format('d/m/Y') }}</div>
             </td>
         </tr>
     </table>
@@ -60,9 +60,9 @@
         <thead>
             <tr>
                 <th>Description</th>
-                <th class="text-center">Unit Price</th>
-                <th class="text-center">Qty</th>
-                <th class="text-right">Amount</th>
+                <th class="text-center">Prix U.</th>
+                <th class="text-center">Qté</th>
+                <th class="text-right">Montant</th>
             </tr>
         </thead>
         <tbody>
@@ -79,13 +79,13 @@
 
     <div class="total-container">
         <div class="total-box">
-            <div class="total-label">Total:</div>
+            <div class="total-label">Total TTC :</div>
             <div class="total-amount">{{ number_format($invoice->total, 2) }} DH</div>
         </div>
     </div>
 
     <div class="footer">
-        Thank you for your business!
+        Merci pour votre confiance !
     </div>
 
 </body>
