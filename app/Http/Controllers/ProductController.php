@@ -11,7 +11,8 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::latest()->paginate(10);
+        // Fetch all products for real-time frontend filtering
+        $products = Product::orderBy('category')->orderBy('name')->get();
         return view('products.index', compact('products'));
     }
 
@@ -30,7 +31,7 @@ class ProductController extends Controller
 
         Product::create($data);
 
-        return redirect()->route('products.index')->with('success', 'Product created successfully.');
+        return redirect()->route('products.index')->with('success', 'Produit créé avec succès.');
     }
 
     public function show(Product $product)
@@ -58,17 +59,22 @@ class ProductController extends Controller
 
         $product->update($data);
 
-        return redirect()->route('products.index')->with('success', 'Product updated successfully.');
+        return redirect()->route('products.index')->with('success', 'Produit mis à jour avec succès.');
     }
 
     public function destroy(Product $product)
     {
+        // Check if the product is used in any invoices
+        if ($product->invoiceItems()->exists()) {
+            return redirect()->route('products.index')->with('error', 'Ce produit ne peut pas être supprimé car il est déjà utilisé dans une ou plusieurs factures.');
+        }
+
         if ($product->image) {
             Storage::disk('public')->delete($product->image);
         }
         
         $product->delete();
 
-        return redirect()->route('products.index')->with('success', 'Product deleted successfully.');
+        return redirect()->route('products.index')->with('success', 'Produit supprimé avec succès.');
     }
 }
