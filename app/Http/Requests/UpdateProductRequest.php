@@ -14,6 +14,8 @@ class UpdateProductRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'category' => ['nullable', 'string', 'in:Couscous,Semoule & Farine,Pâtes,Autre'],
+            'size' => ['nullable', 'string', 'in:500g,750g,1kg,5kg,10kg,25kg'],
             'name' => ['required', 'string', 'max:255'],
             'price' => ['required', 'numeric', 'min:0'],
             'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
