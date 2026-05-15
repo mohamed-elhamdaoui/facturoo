@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Facturo - Admin Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
@@ -23,7 +24,9 @@
                 <a href="{{ route('products.index') }}" class="block px-4 py-3 rounded-lg hover:bg-slate-800 transition {{ request()->routeIs('products.*') ? 'bg-slate-800 text-blue-400 font-medium' : 'text-slate-300' }}">
                     Products
                 </a>
-                <!-- We will add Invoices link later -->
+                <a href="{{ route('invoices.index') }}" class="block px-4 py-3 rounded-lg hover:bg-slate-800 transition {{ request()->routeIs('invoices.*') ? 'bg-slate-800 text-blue-400 font-medium' : 'text-slate-300' }}">
+                    Invoices
+                </a>
             </nav>
             <div class="p-4 border-t border-slate-800 text-sm text-slate-400">
                 &copy; {{ date('Y') }} Facturo
