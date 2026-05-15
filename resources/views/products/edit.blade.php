@@ -1,56 +1,99 @@
 @extends('layouts.app')
 
-@section('title', 'Edit Product')
+@section('title', 'Modifier le Produit')
 
 @section('content')
-<div class="max-w-2xl bg-white rounded-xl shadow-sm border border-gray-100 p-8">
-    <form action="{{ route('products.update', $product) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+<div class="mb-6">
+    <a href="{{ route('products.index') }}" class="text-sm font-medium text-slate-500 hover:text-indigo-600 transition-colors">&larr; Retour aux produits</a>
+</div>
+
+<div class="max-w-2xl mx-auto bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+    <div class="px-6 py-5 border-b border-slate-200 bg-slate-50">
+        <h3 class="text-lg font-semibold text-slate-900">Modifier le produit</h3>
+        <p class="mt-1 text-sm text-slate-500">Mettez à jour les informations de {{ $product->name }}.</p>
+    </div>
+    
+    <form action="{{ route('products.update', $product) }}" method="POST" enctype="multipart/form-data" class="p-6 space-y-6">
         @csrf
         @method('PUT')
-
+        
         <!-- Name -->
         <div>
-            <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Product Name *</label>
-            <input type="text" id="name" name="name" value="{{ old('name', $product->name) }}" required
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition @error('name') border-red-500 @enderror">
+            <label for="name" class="block text-sm font-medium text-slate-700">Nom du produit *</label>
+            <input type="text" id="name" name="name" value="{{ old('name', $product->name) }}" required 
+                class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2.5 border @error('name') border-red-500 @enderror">
             @error('name')
-                <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
             @enderror
         </div>
-
+        
+        <!-- Description -->
+        <div>
+            <label for="description" class="block text-sm font-medium text-slate-700">Description <span class="text-slate-400 font-normal">(Optionnel)</span></label>
+            <textarea id="description" name="description" rows="3" 
+                class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2.5 border @error('description') border-red-500 @enderror">{{ old('description', $product->description) }}</textarea>
+            @error('description')
+                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+            @enderror
+        </div>
+        
         <!-- Price -->
         <div>
-            <label for="price" class="block text-sm font-medium text-gray-700 mb-1">Price (DH) *</label>
-            <input type="number" step="0.01" id="price" name="price" value="{{ old('price', $product->price) }}" required
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition @error('price') border-red-500 @enderror">
-            @error('price')
-                <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
-            @enderror
-        </div>
-
-        <!-- Image -->
-        <div>
-            <label for="image" class="block text-sm font-medium text-gray-700 mb-1">Update Product Image (Optional)</label>
-            
-            @if($product->image)
-                <div class="mb-3">
-                    <p class="text-sm text-gray-500 mb-2">Current Image:</p>
-                    <img src="{{ asset('storage/' . $product->image) }}" alt="Current image" class="w-24 h-24 object-cover rounded-lg border">
+            <label for="price" class="block text-sm font-medium text-slate-700">Prix (DH) *</label>
+            <div class="relative mt-1 rounded-md shadow-sm">
+                <input type="number" step="0.01" id="price" name="price" value="{{ old('price', $product->price) }}" required 
+                    class="block w-full rounded-lg border-slate-300 pl-4 pr-12 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2.5 border @error('price') border-red-500 @enderror">
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
+                    <span class="text-slate-500 sm:text-sm">DH</span>
                 </div>
-            @endif
-
-            <input type="file" id="image" name="image" accept="image/*"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer @error('image') border-red-500 @enderror">
-            @error('image')
-                <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+            </div>
+            @error('price')
+                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
             @enderror
         </div>
-
-        <div class="flex items-center space-x-4 pt-4 border-t border-gray-100">
-            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-medium transition shadow-sm">
-                Update Product
+        
+        <!-- Image -->
+        <div x-data="{ photoName: null, photoPreview: null }">
+            <label class="block text-sm font-medium text-slate-700">Image du produit <span class="text-slate-400 font-normal">(Optionnel)</span></label>
+            
+            <input type="file" id="image" name="image" accept="image/*" class="hidden" x-ref="photo"
+                x-on:change="
+                    photoName = $refs.photo.files[0].name;
+                    const reader = new FileReader();
+                    reader.onload = (e) => { photoPreview = e.target.result; };
+                    reader.readAsDataURL($refs.photo.files[0]);
+                ">
+                
+            <div class="mt-2 flex items-center gap-5">
+                <div class="h-24 w-24 object-cover rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center overflow-hidden">
+                    @if($product->image)
+                        <span x-show="!photoPreview" class="h-full w-full block bg-cover bg-center bg-no-repeat" style="background-image: url('{{ asset('storage/' . $product->image) }}');"></span>
+                    @else
+                        <span x-show="!photoPreview">
+                            <svg class="h-8 w-8 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                        </span>
+                    @endif
+                    <span x-show="photoPreview" class="h-full w-full block" x-bind:style="'background-size: cover; background-repeat: no-repeat; background-position: center center; background-image: url(\'' + photoPreview + '\');'" style="display: none;"></span>
+                </div>
+                
+                <button type="button" class="rounded-md bg-white px-3 py-2 text-sm font-semibold text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 hover:bg-slate-50 transition-colors" @click.prevent="$refs.photo.click()">
+                    Changer l'image
+                </button>
+            </div>
+            @error('image')
+                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+            @enderror
+        </div>
+        
+        <div class="pt-5 mt-5 border-t border-slate-200 flex justify-end gap-3">
+            <a href="{{ route('products.index') }}" class="inline-flex justify-center rounded-lg border border-slate-300 bg-white py-2 px-4 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors">
+                Annuler
+            </a>
+            <button type="submit" class="inline-flex justify-center rounded-lg border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors">
+                Mettre à jour
             </button>
-            <a href="{{ route('products.index') }}" class="text-gray-500 hover:text-gray-700 font-medium">Cancel</a>
         </div>
     </form>
 </div>
