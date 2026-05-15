@@ -53,37 +53,16 @@
         </div>
         
         <!-- Image -->
-        <div x-data="{ photoName: null, photoPreview: null }">
-            <label class="block text-sm font-medium text-slate-700">Image du produit <span class="text-slate-400 font-normal">(Optionnel)</span></label>
+        <div>
+            <label for="image" class="block text-sm font-medium text-slate-700">Image du produit <span class="text-slate-400 font-normal">(Optionnel)</span></label>
             
-            <input type="file" id="image" name="image" accept="image/*" class="hidden" x-ref="photo"
-                x-on:change="
-                    const file = $refs.photo.files[0];
-                    if (!file) return;
-                    photoName = file.name;
-                    const reader = new FileReader();
-                    reader.onload = (e) => { $data.photoPreview = e.target.result; };
-                    reader.readAsDataURL(file);
-                ">
-                
-            <div class="mt-2 flex items-center gap-5">
-                <div class="h-24 w-24 object-cover rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center overflow-hidden">
-                    @if($product->image)
-                        <span x-show="!photoPreview" class="h-full w-full block bg-cover bg-center bg-no-repeat" style="background-image: url('{{ asset('storage/' . $product->image) }}');"></span>
-                    @else
-                        <span x-show="!photoPreview">
-                            <svg class="h-8 w-8 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                            </svg>
-                        </span>
-                    @endif
-                    <span x-show="photoPreview" class="h-full w-full block" x-bind:style="'background-size: cover; background-repeat: no-repeat; background-position: center center; background-image: url(\'' + photoPreview + '\');'" style="display: none;"></span>
+            @if($product->image)
+                <div class="mt-2 mb-4">
+                    <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="h-24 w-24 object-cover rounded-lg border border-slate-200">
                 </div>
-                
-                <button type="button" class="rounded-md bg-white px-3 py-2 text-sm font-semibold text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 hover:bg-slate-50 transition-colors" @click.prevent="$refs.photo.click()">
-                    Changer l'image
-                </button>
-            </div>
+            @endif
+            
+            <input type="file" id="image" name="image" accept="image/*" class="mt-1 block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
             @error('image')
                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
             @enderror
