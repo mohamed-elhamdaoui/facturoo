@@ -27,9 +27,7 @@
                 <p class="text-slate-500 mt-1 font-medium">#INV-{{ str_pad($invoice->id, 5, '0', STR_PAD_LEFT) }}</p>
             </div>
             <div class="text-left sm:text-right">
-                <h3 class="text-xl font-bold text-indigo-600 mb-1">Votre Nom d'Entreprise</h3>
-                <p class="text-slate-500 text-sm">123 Adresse de l'entreprise</p>
-                <p class="text-slate-500 text-sm">Code Postal, Ville</p>
+                <img src="{{ asset('images/kenz_logo.png') }}" alt="Kenz" class="h-16 w-auto ml-auto">
             </div>
         </div>
 
@@ -50,7 +48,7 @@
             <table class="min-w-full divide-y divide-slate-200 text-left">
                 <thead class="bg-slate-50">
                     <tr>
-                        <th class="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Description</th>
+                        <th class="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Produit</th>
                         <th class="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Prix U.</th>
                         <th class="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-center">Qté</th>
                         <th class="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Montant</th>
@@ -59,10 +57,15 @@
                 <tbody class="divide-y divide-slate-100 bg-white">
                     @foreach($invoice->items as $item)
                     <tr class="hover:bg-slate-50/50">
-                        <td class="py-4 px-4 text-sm font-medium text-slate-900">{{ $item->product->name }}</td>
-                        <td class="py-4 px-4 text-sm text-slate-600 text-right">{{ number_format($item->unit_price, 2) }} DH</td>
-                        <td class="py-4 px-4 text-sm text-slate-600 text-center">{{ $item->quantity }}</td>
-                        <td class="py-4 px-4 text-sm font-medium text-slate-900 text-right">{{ number_format($item->subtotal, 2) }} DH</td>
+                        <td class="py-2.5 px-4">
+                            <span class="text-sm font-semibold text-slate-900">{{ $item->product->name }}</span>
+                            @if($item->product->size)
+                                <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200">{{ $item->product->size }}</span>
+                            @endif
+                        </td>
+                        <td class="py-2.5 px-4 text-sm text-slate-600 text-right">{{ number_format($item->unit_price, 2) }} DH</td>
+                        <td class="py-2.5 px-4 text-sm font-semibold text-slate-700 text-center">× {{ $item->quantity }}</td>
+                        <td class="py-2.5 px-4 text-sm font-bold text-indigo-700 text-right">{{ number_format($item->subtotal, 2) }} DH</td>
                     </tr>
                     @endforeach
                 </tbody>
