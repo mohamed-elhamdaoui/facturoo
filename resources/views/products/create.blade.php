@@ -31,10 +31,12 @@
             <div>
                 <label for="category" class="block text-sm font-medium text-slate-700">Catégorie</label>
                 <select id="category" name="category" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2.5 border @error('category') border-red-500 @enderror">
-                    <option value="Autre" {{ old('category') == 'Autre' ? 'selected' : '' }}>Autre</option>
                     <option value="Couscous" {{ old('category') == 'Couscous' ? 'selected' : '' }}>Couscous</option>
-                    <option value="Semoule & Farine" {{ old('category') == 'Semoule & Farine' ? 'selected' : '' }}>Semoule & Farine</option>
-                    <option value="Pâtes" {{ old('category') == 'Pâtes' ? 'selected' : '' }}>Pâtes</option>
+                    <option value="Farine" {{ old('category') == 'Farine' ? 'selected' : '' }}>Farine</option>
+                    <option value="Cheveux d'Ange" {{ old('category') == "Cheveux d'Ange" ? 'selected' : '' }}>Cheveux d'Ange</option>
+                    <option value="Semoule" {{ old('category') == 'Semoule' ? 'selected' : '' }}>Semoule</option>
+                    <option value="Pâtes vrac" {{ old('category') == 'Pâtes vrac' ? 'selected' : '' }}>Pâtes vrac</option>
+                    <option value="Pâtes ptc" {{ old('category') == 'Pâtes ptc' ? 'selected' : '' }}>Pâtes ptc</option>
                 </select>
                 @error('category')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>

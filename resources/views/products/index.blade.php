@@ -29,7 +29,7 @@
 
     <!-- Category Tabs -->
     <div class="mb-8 flex flex-wrap gap-2" id="categoryTabs">
-        @foreach(['Tous', 'Couscous', 'Semoule & Farine', 'Pâtes', 'Autre'] as $tab)
+        @foreach(['Tous', 'Couscous', 'Farine', "Cheveux d'Ange", 'Semoule', 'Pâtes vrac', 'Pâtes ptc'] as $tab)
             <button class="filter-tab px-4 py-2 text-sm font-medium rounded-full border transition-all duration-200 {{ $loop->first ? 'bg-indigo-100 text-indigo-700 border-indigo-200 shadow-sm active-tab' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50' }}"
                     data-tab="{{ $tab }}">
                 {{ $tab }}
@@ -40,12 +40,14 @@
     @php
         $groups = [
             'Couscous' => [],
-            'Semoule & Farine' => [],
-            'Pâtes' => [],
-            'Autre' => []
+            'Farine' => [],
+            "Cheveux d'Ange" => [],
+            'Semoule' => [],
+            'Pâtes vrac' => [],
+            'Pâtes ptc' => [],
         ];
         foreach($products as $p) {
-            $cat = $p->category && array_key_exists($p->category, $groups) ? $p->category : 'Autre';
+            $cat = $p->category && array_key_exists($p->category, $groups) ? $p->category : 'Couscous';
             $groups[$cat][] = $p;
         }
     @endphp
@@ -168,9 +170,11 @@ document.addEventListener('turbo:load', function() {
         // Reset counts
         let groupCounts = {
             'Couscous': 0,
-            'Semoule & Farine': 0,
-            'Pâtes': 0,
-            'Autre': 0
+            'Farine': 0,
+            "Cheveux d'Ange": 0,
+            'Semoule': 0,
+            'Pâtes vrac': 0,
+            'Pâtes ptc': 0,
         };
 
         rows.forEach(row => {
