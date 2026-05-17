@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" class="antialiased h-full bg-gray-50">
+<html lang="fr" class="antialiased h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,13 +20,13 @@
         [x-cloak] { display: none !important; }
     </style>
 </head>
-<body class="h-full flex overflow-hidden text-slate-800">
+<body class="h-screen flex overflow-hidden text-slate-800 bg-slate-50">
 
     <!-- Mobile sidebar backdrop -->
     <div id="mobile-sidebar-backdrop" class="hidden fixed inset-0 z-40 bg-slate-900/80 backdrop-blur-sm lg:hidden transition-opacity duration-300"></div>
 
     <!-- Sidebar -->
-    <aside id="mobile-sidebar" class="-translate-x-full fixed inset-y-0 left-0 z-50 w-72 bg-white border-r border-slate-200 transition-transform duration-300 lg:translate-x-0 lg:static lg:w-64 flex flex-col">
+    <aside id="mobile-sidebar" class="-translate-x-full fixed inset-y-0 left-0 z-50 w-72 bg-white border-r border-slate-200 transition-transform duration-300 lg:translate-x-0 lg:relative lg:w-64 flex-shrink-0 flex flex-col h-full">
         
         <!-- Logo Area -->
         <div class="h-16 flex items-center px-6 border-b border-slate-100">
@@ -66,7 +66,7 @@
     </aside>
 
     <!-- Main Wrapper -->
-    <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+    <div class="flex-1 flex flex-col min-w-0 min-h-0 overflow-hidden">
         
         <!-- Top Navbar -->
         <header class="bg-white border-b border-slate-200 h-16 flex items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -103,7 +103,7 @@
         </header>
 
         <!-- Main Content Area -->
-        <main class="flex-1 overflow-y-auto bg-slate-50/50 p-4 sm:p-6 lg:p-8">
+        <main class="flex-1 min-h-0 overflow-y-auto bg-slate-50/50 p-4 sm:p-6 lg:p-8">
             <div class="max-w-7xl mx-auto">
                 @if(session('success'))
                     <div id="flash-success" class="mb-6 flex items-center justify-between p-4 rounded-lg bg-green-50 border border-green-200 text-green-800 shadow-sm">
