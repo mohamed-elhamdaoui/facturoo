@@ -19,4 +19,12 @@ class Product extends Model
     {
         return $this->hasMany(InvoiceItem::class);
     }
+
+    public function getImageUrlAttribute(): ?string
+    {
+        if (!$this->image) {
+            return null;
+        }
+        return asset('product-images/' . $this->image);
+    }
 }
