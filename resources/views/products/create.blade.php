@@ -31,12 +31,9 @@
             <div>
                 <label for="category" class="block text-sm font-medium text-slate-700">Catégorie</label>
                 <select id="category" name="category" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2.5 border @error('category') border-red-500 @enderror">
-                    <option value="Couscous" {{ old('category') == 'Couscous' ? 'selected' : '' }}>Couscous</option>
-                    <option value="Farine" {{ old('category') == 'Farine' ? 'selected' : '' }}>Farine</option>
-                    <option value="Cheveux d'Ange" {{ old('category') == "Cheveux d'Ange" ? 'selected' : '' }}>Cheveux d'Ange</option>
-                    <option value="Semoule" {{ old('category') == 'Semoule' ? 'selected' : '' }}>Semoule</option>
-                    <option value="Pâtes vrac" {{ old('category') == 'Pâtes vrac' ? 'selected' : '' }}>Pâtes vrac</option>
-                    <option value="Pâtes ptc" {{ old('category') == 'Pâtes ptc' ? 'selected' : '' }}>Pâtes ptc</option>
+                    @foreach(\App\Enums\ProductCategory::values() as $cat)
+                        <option value="{{ $cat }}" {{ old('category') == $cat ? 'selected' : '' }}>{{ $cat }}</option>
+                    @endforeach
                 </select>
                 @error('category')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -79,7 +76,19 @@
         <!-- Image -->
         <div>
             <label for="image" class="block text-sm font-medium text-slate-700">Image du produit <span class="text-slate-400 font-normal">(Optionnel)</span></label>
+            
+            <div id="imagePreviewContainer" class="mt-2 mb-3 hidden">
+                <p class="text-xs text-slate-500 mb-1.5">Aperçu de l'image sélectionnée :</p>
+                <div class="relative inline-block">
+                    <img id="imagePreviewTarget" src="" class="h-24 w-24 object-cover rounded-lg border border-slate-200 shadow-sm" alt="Aperçu">
+                    <button type="button" onclick="clearImageSelection()" class="absolute -top-2 -right-2 bg-red-100 hover:bg-red-200 text-red-700 hover:text-red-900 rounded-full p-1 border border-red-200 shadow transition-colors" title="Supprimer l'image">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+            </div>
+
             <input type="file" id="image" name="image" accept="image/*" class="mt-1 block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+            <p class="mt-1.5 text-xs text-slate-400">Formats acceptés : JPEG, PNG, JPG, WEBP. Taille maximale autorisée : 2 Mo.</p>
             @error('image')
                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
             @enderror
@@ -95,4 +104,43 @@
         </div>
     </form>
 </div>
+
+<script>
+document.addEventListener('turbo:load', function() {
+    const imageInput = document.getElementById('image');
+    const previewContainer = document.getElementById('imagePreviewContainer');
+    const previewTarget = document.getElementById('imagePreviewTarget');
+    
+    if (imageInput) {
+        imageInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                // Check max size (2048 KB = 2 MB)
+                if (file.size > 2048 * 1024) {
+                    alert("Attention : Ce fichier dépasse la taille maximale autorisée de 2 Mo.");
+                    this.value = '';
+                    if (previewContainer) previewContainer.classList.add('hidden');
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    if (previewTarget) previewTarget.src = e.target.result;
+                    if (previewContainer) previewContainer.classList.remove('hidden');
+                }
+                reader.readAsDataURL(file);
+            } else {
+                if (previewContainer) previewContainer.classList.add('hidden');
+            }
+        });
+    }
+});
+
+function clearImageSelection() {
+    const imageInput = document.getElementById('image');
+    const previewContainer = document.getElementById('imagePreviewContainer');
+    if (imageInput) imageInput.value = '';
+    if (previewContainer) previewContainer.classList.add('hidden');
+}
+</script>
 @endsection
