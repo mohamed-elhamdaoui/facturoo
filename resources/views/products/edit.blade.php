@@ -32,12 +32,9 @@
             <div>
                 <label for="category" class="block text-sm font-medium text-slate-700">Catégorie</label>
                 <select id="category" name="category" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2.5 border @error('category') border-red-500 @enderror">
-                    <option value="Couscous" {{ old('category', $product->category) == 'Couscous' ? 'selected' : '' }}>Couscous</option>
-                    <option value="Farine" {{ old('category', $product->category) == 'Farine' ? 'selected' : '' }}>Farine</option>
-                    <option value="Cheveux d'Ange" {{ old('category', $product->category) == "Cheveux d'Ange" ? 'selected' : '' }}>Cheveux d'Ange</option>
-                    <option value="Semoule" {{ old('category', $product->category) == 'Semoule' ? 'selected' : '' }}>Semoule</option>
-                    <option value="Pâtes vrac" {{ old('category', $product->category) == 'Pâtes vrac' ? 'selected' : '' }}>Pâtes vrac</option>
-                    <option value="Pâtes ptc" {{ old('category', $product->category) == 'Pâtes ptc' ? 'selected' : '' }}>Pâtes ptc</option>
+                    @foreach(\App\Enums\ProductCategory::values() as $cat)
+                        <option value="{{ $cat }}" {{ old('category', $product->category) == $cat ? 'selected' : '' }}>{{ $cat }}</option>
+                    @endforeach
                 </select>
                 @error('category')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -81,13 +78,24 @@
         <div>
             <label for="image" class="block text-sm font-medium text-slate-700">Image du produit <span class="text-slate-400 font-normal">(Optionnel)</span></label>
             
-            @if($product->image)
-                <div class="mt-2 mb-4">
-                    <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="h-24 w-24 object-cover rounded-lg border border-slate-200">
+            <div class="mt-2 mb-3">
+                <p class="text-xs text-slate-500 mb-1.5">Image actuelle / sélectionnée :</p>
+                <div class="relative inline-block" id="imageWrapper">
+                    @if($product->image)
+                        <img id="imagePreviewTarget" src="{{ $product->image_url }}" alt="{{ $product->name }}" class="h-24 w-24 object-cover rounded-lg border border-slate-200 shadow-sm">
+                    @else
+                        <div id="imagePlaceholder" class="h-24 w-24 rounded-lg bg-slate-100 flex items-center justify-center border border-slate-200 text-slate-400">
+                            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        </div>
+                    @endif
+                    <button type="button" id="clearImageBtn" onclick="clearImageSelection()" class="absolute -top-2 -right-2 bg-red-100 hover:bg-red-200 text-red-700 hover:text-red-900 rounded-full p-1 border border-red-200 shadow transition-colors hidden" title="Annuler la nouvelle image">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
                 </div>
-            @endif
-            
+            </div>
+
             <input type="file" id="image" name="image" accept="image/*" class="mt-1 block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+            <p class="mt-1.5 text-xs text-slate-400">Formats acceptés : JPEG, PNG, JPG, WEBP. Taille maximale autorisée : 2 Mo.</p>
             @error('image')
                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
             @enderror
@@ -103,4 +111,78 @@
         </div>
     </form>
 </div>
+
+<script>
+document.addEventListener('turbo:load', function() {
+    const imageInput = document.getElementById('image');
+    const previewTarget = document.getElementById('imagePreviewTarget');
+    const imagePlaceholder = document.getElementById('imagePlaceholder');
+    const clearBtn = document.getElementById('clearImageBtn');
+    
+    // Store initial source/placeholder state
+    const hasInitialImage = @json($product->image ? true : false);
+    const initialSrc = hasInitialImage && previewTarget ? previewTarget.src : '';
+    
+    if (imageInput) {
+        imageInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                // Check max size (2048 KB = 2 MB)
+                if (file.size > 2048 * 1024) {
+                    alert("Attention : Ce fichier dépasse la taille maximale autorisée de 2 Mo.");
+                    this.value = '';
+                    resetToInitial();
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    let targetImg = document.getElementById('imagePreviewTarget');
+                    if (targetImg) {
+                        targetImg.src = e.target.result;
+                        targetImg.classList.remove('hidden');
+                    } else if (imagePlaceholder) {
+                        // Create preview element dynamically
+                        imagePlaceholder.classList.add('hidden');
+                        const wrapper = document.getElementById('imageWrapper');
+                        const img = document.createElement('img');
+                        img.id = 'imagePreviewTarget';
+                        img.className = 'h-24 w-24 object-cover rounded-lg border border-slate-200 shadow-sm';
+                        img.src = e.target.result;
+                        wrapper.insertBefore(img, clearBtn);
+                    }
+                    if (clearBtn) clearBtn.classList.remove('hidden');
+                }
+                reader.readAsDataURL(file);
+            } else {
+                resetToInitial();
+            }
+        });
+    }
+
+    function resetToInitial() {
+        const dynamicImg = document.getElementById('imagePreviewTarget');
+        if (hasInitialImage) {
+            if (dynamicImg) {
+                dynamicImg.src = initialSrc;
+                dynamicImg.classList.remove('hidden');
+            }
+        } else {
+            if (dynamicImg) dynamicImg.remove();
+            if (imagePlaceholder) imagePlaceholder.classList.remove('hidden');
+        }
+        if (clearBtn) clearBtn.classList.add('hidden');
+    }
+});
+
+function clearImageSelection() {
+    const imageInput = document.getElementById('image');
+    if (imageInput) {
+        imageInput.value = '';
+        // Trigger change event to trigger preview reset
+        const event = new Event('change');
+        imageInput.dispatchEvent(event);
+    }
+}
+</script>
 @endsection
