@@ -29,7 +29,7 @@
 
     <!-- Category Tabs -->
     <div class="mb-8 flex flex-wrap gap-2" id="categoryTabs">
-        @foreach(['Tous', 'Couscous', 'Farine', "Cheveux d'Ange", 'Semoule', 'Pâtes vrac', 'Pâtes ptc'] as $tab)
+        @foreach(['Tous', ...\App\Enums\ProductCategory::values()] as $tab)
             <button class="filter-tab px-4 py-2 text-sm font-medium rounded-full border transition-all duration-200 {{ $loop->first ? 'bg-indigo-100 text-indigo-700 border-indigo-200 shadow-sm active-tab' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50' }}"
                     data-tab="{{ $tab }}">
                 {{ $tab }}
@@ -38,16 +38,9 @@
     </div>
 
     @php
-        $groups = [
-            'Couscous' => [],
-            'Farine' => [],
-            "Cheveux d'Ange" => [],
-            'Semoule' => [],
-            'Pâtes vrac' => [],
-            'Pâtes ptc' => [],
-        ];
+        $groups = array_fill_keys(\App\Enums\ProductCategory::values(), []);
         foreach($products as $p) {
-            $cat = $p->category && array_key_exists($p->category, $groups) ? $p->category : 'Couscous';
+            $cat = $p->category && array_key_exists($p->category, $groups) ? $p->category : array_key_first($groups);
             $groups[$cat][] = $p;
         }
     @endphp
@@ -79,19 +72,22 @@
                                         data-name="{{ strtolower($product->name ?? '') }}" 
                                         data-size="{{ strtolower($product->size ?? '') }}">
                                         
-                                        <td class="px-6 py-4 whitespace-nowrap">
+                                        <td class="px-6 py-3 whitespace-nowrap">
                                             <div class="flex items-center">
-                                                <div class="flex-shrink-0 h-10 w-10">
+                                                <div class="flex-shrink-0 h-16 w-16 overflow-hidden rounded-lg border border-slate-200 shadow-sm bg-slate-50 relative group">
                                                     @if($product->image)
-                                                        <img class="h-10 w-10 rounded-lg object-cover border border-slate-200 shadow-sm" src="{{ asset('storage/' . $product->image) }}" alt="">
+                                                        <img class="h-16 w-16 object-cover group-hover:scale-110 transition-transform duration-300 cursor-zoom-in" src="{{ $product->image_url }}" alt="" onclick="openImageModal('{{ $product->image_url }}', '{{ addslashes($product->name) }}')">
+                                                        <div class="absolute inset-0 bg-slate-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center pointer-events-none">
+                                                            <svg class="w-5 h-5 text-white drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7"></path></svg>
+                                                        </div>
                                                     @else
-                                                        <div class="h-10 w-10 rounded-lg bg-slate-100 flex items-center justify-center border border-slate-200 text-slate-400">
-                                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                                        <div class="h-16 w-16 bg-slate-100 flex items-center justify-center border border-slate-200 text-slate-400">
+                                                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                                                         </div>
                                                     @endif
                                                 </div>
                                                 <div class="ml-4">
-                                                    <div class="text-sm font-semibold text-slate-900">{{ $product->name }}</div>
+                                                    <div class="text-sm font-semibold text-slate-900 leading-tight">{{ $product->name }}</div>
                                                 </div>
                                             </div>
                                         </td>
@@ -153,6 +149,23 @@
     </div>
 </div>
 
+<!-- Image Preview Modal -->
+<div id="imagePreviewModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-opacity duration-300 opacity-0" onclick="closeImageModal()">
+    <div class="relative max-w-2xl w-full bg-white rounded-2xl overflow-hidden shadow-2xl border border-slate-100 transform scale-95 transition-transform duration-300" onclick="event.stopPropagation()">
+        <!-- Header -->
+        <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+            <h3 id="imageModalTitle" class="font-bold text-slate-800 text-lg">Prévisualisation de l'image</h3>
+            <button onclick="closeImageModal()" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-100 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+        <!-- Body -->
+        <div class="p-6 flex items-center justify-center bg-white">
+            <img id="imageModalTarget" class="max-h-[60vh] max-w-full rounded-lg object-contain shadow-md border border-slate-200" src="" alt="">
+        </div>
+    </div>
+</div>
+
 <script>
 document.addEventListener('turbo:load', function() {
     const searchInput = document.getElementById('searchInput');
@@ -167,15 +180,10 @@ document.addEventListener('turbo:load', function() {
     function filterProducts() {
         let totalVisible = 0;
         
-        // Reset counts
-        let groupCounts = {
-            'Couscous': 0,
-            'Farine': 0,
-            "Cheveux d'Ange": 0,
-            'Semoule': 0,
-            'Pâtes vrac': 0,
-            'Pâtes ptc': 0,
-        };
+        // Reset counts dynamically from enum
+        const categoryKeys = @json(\App\Enums\ProductCategory::values());
+        let groupCounts = {};
+        categoryKeys.forEach(k => groupCounts[k] = 0);
 
         rows.forEach(row => {
             const cat = row.getAttribute('data-category');
@@ -263,5 +271,42 @@ document.addEventListener('turbo:before-cache', function() {
     const searchInput = document.getElementById('searchInput');
     if (searchInput) searchInput.value = '';
 });
+
+function openImageModal(url, name) {
+    const modal = document.getElementById('imagePreviewModal');
+    const img = document.getElementById('imageModalTarget');
+    const title = document.getElementById('imageModalTitle');
+    
+    if (!modal || !img) return;
+    
+    img.src = url;
+    if (title) {
+        title.textContent = name || "Prévisualisation de l'image";
+    }
+    
+    modal.classList.remove('hidden');
+    // Force reflow
+    modal.offsetHeight;
+    modal.classList.add('flex');
+    modal.classList.remove('opacity-0');
+    modal.classList.add('opacity-100');
+    modal.querySelector('.transform').classList.remove('scale-95');
+    modal.querySelector('.transform').classList.add('scale-100');
+}
+
+function closeImageModal() {
+    const modal = document.getElementById('imagePreviewModal');
+    if (!modal || modal.classList.contains('hidden')) return;
+    
+    modal.classList.remove('opacity-100');
+    modal.classList.add('opacity-0');
+    modal.querySelector('.transform').classList.remove('scale-100');
+    modal.querySelector('.transform').classList.add('scale-95');
+    
+    setTimeout(() => {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }, 300);
+}
 </script>
 @endsection
