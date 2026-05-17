@@ -13,3 +13,24 @@ Route::middleware(['auth'])->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+// Safe, secure fallback route to serve uploaded storage files in case of broken symlinks or container mount issues
+Route::get('product-images/{path}', function ($path) {
+    // Prevent path traversal
+    $path = str_replace(['../', '..\\'], '', $path);
+    
+    /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+    $disk = \Illuminate\Support\Facades\Storage::disk('public');
+    
+    if (!$disk->exists($path)) {
+        abort(404);
+    }
+    
+    $file = $disk->get($path);
+    $type = $disk->mimeType($path);
+    
+    return \Illuminate\Support\Facades\Response::make($file, 200, [
+        'Content-Type' => $type,
+        'Cache-Control' => 'public, max-age=31536000',
+    ]);
+})->where('path', '.*');
