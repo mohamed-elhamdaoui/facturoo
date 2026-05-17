@@ -27,7 +27,7 @@
                 <p class="text-slate-500 mt-1 font-medium">#INV-{{ str_pad($invoice->id, 5, '0', STR_PAD_LEFT) }}</p>
             </div>
             <div class="text-left sm:text-right">
-                <img src="{{ asset('images/kenz_logo.png') }}" alt="Kenz" class="h-16 w-auto ml-auto">
+                <img src="{{ asset('images/kenz_logo.svg') }}" alt="Kenz" class="h-16 w-auto ml-auto">
             </div>
         </div>
 
@@ -49,8 +49,8 @@
                 <thead class="bg-slate-50">
                     <tr>
                         <th class="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Produit</th>
-                        <th class="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Prix U.</th>
                         <th class="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-center">Qté</th>
+                        <th class="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Prix U.</th>
                         <th class="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Montant</th>
                     </tr>
                 </thead>
@@ -63,23 +63,21 @@
                                 <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200">{{ $item->product->size }}</span>
                             @endif
                         </td>
-                        <td class="py-2.5 px-4 text-sm text-slate-600 text-right">{{ number_format($item->unit_price, 2) }} DH</td>
                         <td class="py-2.5 px-4 text-sm font-semibold text-slate-700 text-center">× {{ $item->quantity }}</td>
+                        <td class="py-2.5 px-4 text-sm text-slate-600 text-right">{{ number_format($item->unit_price, 2) }} DH</td>
                         <td class="py-2.5 px-4 text-sm font-bold text-indigo-700 text-right">{{ number_format($item->subtotal, 2) }} DH</td>
                     </tr>
                     @endforeach
                 </tbody>
+                <tfoot>
+                    <tr class="border-t-2 border-slate-900 font-bold text-slate-900 bg-slate-50/50">
+                        <td class="py-4 px-4 text-base">Total TTC</td>
+                        <td class="py-4 px-4"></td>
+                        <td class="py-4 px-4"></td>
+                        <td class="py-4 px-4 text-right text-lg text-indigo-700 font-extrabold">{{ number_format($invoice->total, 2) }} DH</td>
+                    </tr>
+                </tfoot>
             </table>
-        </div>
-
-        <!-- Total -->
-        <div class="flex justify-end pt-4">
-            <div class="w-full sm:w-1/3 bg-slate-50 rounded-lg p-5 border border-slate-200">
-                <div class="flex justify-between items-center text-xl">
-                    <span class="font-medium text-slate-500">Total TTC</span>
-                    <span class="font-bold text-indigo-600">{{ number_format($invoice->total, 2) }} DH</span>
-                </div>
-            </div>
         </div>
         
         <!-- Footer -->
