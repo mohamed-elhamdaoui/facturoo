@@ -41,22 +41,7 @@
                 @enderror
             </div>
             
-            <!-- Size -->
-            <div>
-                <label for="size" class="block text-sm font-medium text-slate-700">Taille / Poids</label>
-                <select id="size" name="size" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2.5 border @error('size') border-red-500 @enderror">
-                    <option value="" {{ old('size', $product->size) == '' ? 'selected' : '' }}>Sélectionner une taille...</option>
-                    <option value="500g" {{ old('size', $product->size) == '500g' ? 'selected' : '' }}>500g</option>
-                    <option value="750g" {{ old('size', $product->size) == '750g' ? 'selected' : '' }}>750g</option>
-                    <option value="1kg" {{ old('size', $product->size) == '1kg' ? 'selected' : '' }}>1kg</option>
-                    <option value="5kg" {{ old('size', $product->size) == '5kg' ? 'selected' : '' }}>5kg</option>
-                    <option value="10kg" {{ old('size', $product->size) == '10kg' ? 'selected' : '' }}>10kg</option>
-                    <option value="25kg" {{ old('size', $product->size) == '25kg' ? 'selected' : '' }}>25kg</option>
-                </select>
-                @error('size')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
-            </div>
+
         </div>
         
         <!-- Price -->
@@ -101,6 +86,28 @@
             @enderror
         </div>
         
+        <!-- Stock -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div>
+                <label for="stock_quantity" class="block text-sm font-medium text-slate-700">Quantité en stock</label>
+                <input type="number" min="0" id="stock_quantity" name="stock_quantity" value="{{ old('stock_quantity', $product->stock_quantity) }}"
+                    class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2.5 border @error('stock_quantity') border-red-500 @enderror">
+                <p class="mt-1 text-xs text-slate-400">Pour modifier le stock, utilisez la page <a href="{{ route('stock.create') }}" class="text-indigo-600 hover:underline">Entrée de stock</a>.</p>
+                @error('stock_quantity')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
+            <div>
+                <label for="min_stock" class="block text-sm font-medium text-slate-700">Seuil d'alerte (min)</label>
+                <input type="number" min="0" id="min_stock" name="min_stock" value="{{ old('min_stock', $product->min_stock) }}"
+                    class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2.5 border @error('min_stock') border-red-500 @enderror">
+                <p class="mt-1 text-xs text-slate-400">Alerte orange en dessous de ce seuil.</p>
+                @error('min_stock')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
+        </div>
+
         <div class="pt-5 mt-5 border-t border-slate-200 flex justify-end gap-3">
             <a href="{{ route('products.index') }}" class="inline-flex justify-center rounded-lg border border-slate-300 bg-white py-2 px-4 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors">
                 Annuler
@@ -110,6 +117,55 @@
             </button>
         </div>
     </form>
+</div>
+
+<!-- Stock History -->
+<div class="max-w-2xl mx-auto mt-8 bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+    <div class="px-6 py-4 border-b border-slate-200 bg-slate-50 flex items-center justify-between">
+        <div>
+            <h3 class="text-base font-semibold text-slate-900">Historique des mouvements de stock</h3>
+            <p class="mt-0.5 text-xs text-slate-500">Toutes les entrées et sorties de stock pour ce produit.</p>
+        </div>
+        <a href="{{ route('stock.create') }}" class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-white rounded-lg transition-colors" style="background-color:#4f46e5;">
+            + Entrée de stock
+        </a>
+    </div>
+
+    @if($product->stockMovements->isEmpty())
+        <div class="text-center py-10">
+            <svg class="mx-auto h-10 w-10 text-slate-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            <p class="text-sm text-slate-500">Aucun mouvement de stock enregistré.</p>
+        </div>
+    @else
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-slate-200">
+                <thead class="bg-slate-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Date</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Type</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Quantité</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Raison</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-slate-200">
+                    @foreach($product->stockMovements as $movement)
+                        <tr class="hover:bg-slate-50/80 transition-colors">
+                            <td class="px-6 py-3 text-sm text-slate-600 whitespace-nowrap">{{ $movement->created_at->format('d/m/Y H:i') }}</td>
+                            <td class="px-6 py-3 whitespace-nowrap">
+                                @if($movement->type === 'entrée')
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold" style="background:#dcfce7;color:#15803d;">↑ Entrée</span>
+                                @else
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold" style="background:#fee2e2;color:#b91c1c;">↓ Sortie</span>
+                                @endif
+                            </td>
+                            <td class="px-6 py-3 text-sm font-semibold text-slate-900 whitespace-nowrap">{{ $movement->quantity }}</td>
+                            <td class="px-6 py-3 text-sm text-slate-500">{{ $movement->reason ?? '—' }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    @endif
 </div>
 
 <script>
