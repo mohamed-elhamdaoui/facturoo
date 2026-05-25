@@ -130,17 +130,18 @@
                 </div>
             </div>
 
-            <div class="mt-6 flex justify-end gap-3">
+            <div class="mt-6 flex items-center justify-end gap-3">
                 <button type="button"
                         x-on:click="openDeleteModal = false"
                         class="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors">
                     Annuler
                 </button>
-                <form :action="deleteUrl" method="POST">
+                <form :action="deleteUrl" method="POST" style="display:inline;">
                     @csrf
                     @method('DELETE')
                     <button type="submit"
-                            class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors">
+                            style="background-color:#dc2626;color:#ffffff;"
+                            class="px-4 py-2 text-sm font-medium rounded-lg transition-colors hover:opacity-90">
                         Confirmer la suppression
                     </button>
                 </form>
