@@ -9,10 +9,12 @@ class Product extends Model
 {
     protected $fillable = [
         'category',
-        'size',
         'name',
+        'size',
         'price',
         'image',
+        'stock_quantity',
+        'min_stock',
     ];
 
     public function invoiceItems(): HasMany
@@ -20,11 +22,23 @@ class Product extends Model
         return $this->hasMany(InvoiceItem::class);
     }
 
+    public function stockMovements(): HasMany
+    {
+        return $this->hasMany(StockMovement::class)->latest('created_at');
+    }
+
     public function getImageUrlAttribute(): ?string
     {
-        if (!$this->image) {
+        if (!$this->image || !\Illuminate\Support\Facades\Storage::disk('public')->exists($this->image)) {
             return null;
         }
-        return asset('product-images/' . $this->image);
+        return asset('storage/' . $this->image);
+    }
+
+    public function getStockStatusAttribute(): string
+    {
+        if ($this->stock_quantity <= 0) return 'out';
+        if ($this->stock_quantity <= $this->min_stock) return 'low';
+        return 'ok';
     }
 }
