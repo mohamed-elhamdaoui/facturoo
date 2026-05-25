@@ -40,23 +40,21 @@
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
             </div>
-            
 
-        </div>
-        
-        <!-- Price -->
-        <div>
-            <label for="price" class="block text-sm font-medium text-slate-700">Prix (DH) *</label>
-            <div class="relative mt-1 rounded-md shadow-sm">
-                <input type="number" step="0.01" id="price" name="price" value="{{ old('price', $product->price) }}" required 
-                    class="block w-full rounded-lg border-slate-300 pl-4 pr-12 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2.5 border @error('price') border-red-500 @enderror">
-                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
-                    <span class="text-slate-500 sm:text-sm">DH</span>
+            <!-- Price -->
+            <div>
+                <label for="price" class="block text-sm font-medium text-slate-700">Prix (DH) *</label>
+                <div class="relative mt-1 rounded-md shadow-sm">
+                    <input type="number" step="0.01" id="price" name="price" value="{{ old('price', $product->price) }}" required 
+                        class="block w-full rounded-lg border-slate-300 pl-4 pr-12 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2.5 border @error('price') border-red-500 @enderror">
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
+                        <span class="text-slate-500 sm:text-sm">DH</span>
+                    </div>
                 </div>
+                @error('price')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
             </div>
-            @error('price')
-                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-            @enderror
         </div>
         
         <!-- Image -->

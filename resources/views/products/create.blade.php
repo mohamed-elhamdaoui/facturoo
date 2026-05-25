@@ -39,38 +39,43 @@
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
             </div>
-            
-            <!-- Size -->
+
+            <!-- Price -->
             <div>
-                <label for="size" class="block text-sm font-medium text-slate-700">Taille / Poids</label>
-                <select id="size" name="size" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2.5 border @error('size') border-red-500 @enderror">
-                    <option value="" {{ old('size') == '' ? 'selected' : '' }}>Sélectionner une taille...</option>
-                    <option value="500g" {{ old('size') == '500g' ? 'selected' : '' }}>500g</option>
-                    <option value="750g" {{ old('size') == '750g' ? 'selected' : '' }}>750g</option>
-                    <option value="1kg" {{ old('size') == '1kg' ? 'selected' : '' }}>1kg</option>
-                    <option value="5kg" {{ old('size') == '5kg' ? 'selected' : '' }}>5kg</option>
-                    <option value="10kg" {{ old('size') == '10kg' ? 'selected' : '' }}>10kg</option>
-                    <option value="25kg" {{ old('size') == '25kg' ? 'selected' : '' }}>25kg</option>
-                </select>
-                @error('size')
+                <label for="price" class="block text-sm font-medium text-slate-700">Prix (DH) *</label>
+                <div class="relative mt-1 rounded-md shadow-sm">
+                    <input type="number" step="0.01" id="price" name="price" value="{{ old('price') }}" required 
+                        class="block w-full rounded-lg border-slate-300 pl-4 pr-12 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2.5 border @error('price') border-red-500 @enderror">
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
+                        <span class="text-slate-500 sm:text-sm">DH</span>
+                    </div>
+                </div>
+                @error('price')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
             </div>
         </div>
-        
-        <!-- Price -->
-        <div>
-            <label for="price" class="block text-sm font-medium text-slate-700">Prix (DH) *</label>
-            <div class="relative mt-1 rounded-md shadow-sm">
-                <input type="number" step="0.01" id="price" name="price" value="{{ old('price') }}" required 
-                    class="block w-full rounded-lg border-slate-300 pl-4 pr-12 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2.5 border @error('price') border-red-500 @enderror">
-                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
-                    <span class="text-slate-500 sm:text-sm">DH</span>
-                </div>
+
+        <!-- Stock -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div>
+                <label for="stock_quantity" class="block text-sm font-medium text-slate-700">Quantité de départ en stock</label>
+                <input type="number" min="0" id="stock_quantity" name="stock_quantity" value="{{ old('stock_quantity', 0) }}"
+                    class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2.5 border @error('stock_quantity') border-red-500 @enderror">
+                <p class="mt-1 text-xs text-slate-400">Stock initial à la création du produit.</p>
+                @error('stock_quantity')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
             </div>
-            @error('price')
-                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-            @enderror
+            <div>
+                <label for="min_stock" class="block text-sm font-medium text-slate-700">Seuil d'alerte (min)</label>
+                <input type="number" min="0" id="min_stock" name="min_stock" value="{{ old('min_stock', 5) }}"
+                    class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2.5 border @error('min_stock') border-red-500 @enderror">
+                <p class="mt-1 text-xs text-slate-400">Alerte orange en dessous de ce seuil.</p>
+                @error('min_stock')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
         </div>
         
         <!-- Image -->
