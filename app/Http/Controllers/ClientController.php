@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use App\Http\Requests\StoreClientRequest;
+use App\Http\Requests\UpdateClientRequest;
 use App\Models\Client;
 
 class ClientController extends Controller
@@ -19,12 +20,9 @@ class ClientController extends Controller
         return view('clients.create');
     }
 
-    public function store(Request $request)
+    public function store(StoreClientRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'phone' => 'nullable|string|max:50',
-        ]);
+        $validated = $request->validated();
 
         $client = Client::create($validated);
 
@@ -40,12 +38,9 @@ class ClientController extends Controller
         return view('clients.edit', compact('client'));
     }
 
-    public function update(Request $request, Client $client)
+    public function update(UpdateClientRequest $request, Client $client)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'phone' => 'nullable|string|max:50',
-        ]);
+        $validated = $request->validated();
 
         $client->update($validated);
 
