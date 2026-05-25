@@ -16,11 +16,12 @@ class UpdateProductRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'category' => ['nullable', 'string', Rule::in(ProductCategory::values())],
-            'size' => ['nullable', 'string', 'in:500g,750g,1kg,5kg,10kg,25kg'],
-            'name' => ['required', 'string', 'max:255'],
-            'price' => ['required', 'numeric', 'min:0'],
-            'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
+            'category'       => ['nullable', 'string', Rule::in(ProductCategory::values())],
+            'name'           => ['required', 'string', 'max:255'],
+            'price'          => ['required', 'numeric', 'min:0'],
+            'image'          => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
+            'stock_quantity' => ['nullable', 'integer', 'min:0'],
+            'min_stock'      => ['nullable', 'integer', 'min:0'],
         ];
     }
 }
