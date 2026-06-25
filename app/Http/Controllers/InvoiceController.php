@@ -14,14 +14,15 @@ class InvoiceController extends Controller
 {
     public function index()
     {
-        $invoices = Invoice::withCount('items')->latest()->paginate(10);
+        $invoices = Invoice::with(['client'])->withCount('items')->latest()->paginate(10);
         return view('invoices.index', compact('invoices'));
     }
 
     public function create()
     {
         $products = Product::orderBy('category')->orderBy('name')->get();
-        return view('invoices.create', compact('products'));
+        $clients  = \App\Models\Client::orderBy('name')->get();
+        return view('invoices.create', compact('products', 'clients'));
     }
 
     public function store(StoreInvoiceRequest $request)
@@ -30,8 +31,8 @@ class InvoiceController extends Controller
 
         $invoice = DB::transaction(function () use ($data) {
             $invoice = Invoice::create([
-                'customer_name' => $data['customer_name'],
-                'total'         => 0,
+                'client_id' => $data['client_id'],
+                'total'     => 0,
             ]);
 
             $grandTotal = 0;
@@ -48,6 +49,17 @@ class InvoiceController extends Controller
                     'subtotal'   => $subtotal,
                 ]);
 
+                // Decrement product stock
+                $product->decrement('stock_quantity', $itemData['quantity']);
+
+                // Create stock movement
+                \App\Models\StockMovement::create([
+                    'product_id' => $product->id,
+                    'type'       => 'sortie',
+                    'quantity'   => $itemData['quantity'],
+                    'reason'     => 'Facture #' . $invoice->id,
+                ]);
+
                 $grandTotal += $subtotal;
             }
 
@@ -62,20 +74,36 @@ class InvoiceController extends Controller
 
     public function show(Invoice $invoice)
     {
-        $invoice->load(['items.product']);
+        $invoice->load(['client', 'items.product']);
         return view('invoices.show', compact('invoice'));
     }
 
     public function download(Invoice $invoice)
     {
-        $invoice->load(['items.product']);
+        $invoice->load(['client', 'items.product']);
         $pdf = Pdf::loadView('invoices.pdf', compact('invoice'));
         return $pdf->download('invoice-' . str_pad($invoice->id, 5, '0', STR_PAD_LEFT) . '.pdf');
     }
 
     public function destroy(Invoice $invoice)
     {
-        $invoice->delete();
+        DB::transaction(function () use ($invoice) {
+            // Restore stock for each item before deleting
+            foreach ($invoice->items as $item) {
+                if ($item->product) {
+                    $item->product->increment('stock_quantity', $item->quantity);
+                    
+                    \App\Models\StockMovement::create([
+                        'product_id' => $item->product_id,
+                        'type'       => 'entrée',
+                        'quantity'   => $item->quantity,
+                        'reason'     => 'Annulation Facture #' . $invoice->id,
+                    ]);
+                }
+            }
+            $invoice->delete();
+        });
+
         return redirect()->route('invoices.index')->with('success', 'Facture supprimée avec succès.');
     }
 }

@@ -3,7 +3,7 @@
 @section('title', 'Gestion des Produits')
 
 @section('content')
-<div>
+<div x-data="{ showStockModal: false, selectedProductName: '', selectedProductUrl: '', currentStock: 0, quantity: 1 }">
     <!-- Header & Search -->
     <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
@@ -62,10 +62,10 @@
                         <table class="min-w-full divide-y divide-slate-200">
                             <thead class="bg-slate-50">
                                 <tr>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider w-full">Produit</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Prix</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Stock</th>
-                                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">Actions</th>
+                                    <th scope="col" class="w-1/2 px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Produit</th>
+                                    <th scope="col" class="w-1/6 px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Prix</th>
+                                    <th scope="col" class="w-1/6 px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Stock</th>
+                                    <th scope="col" class="w-1/6 px-6 py-3 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-slate-200">
@@ -74,11 +74,11 @@
                                         data-category="{{ $category }}" 
                                         data-name="{{ strtolower($product->name ?? '') }}">
                                         
-                                        <td class="px-6 py-3 whitespace-nowrap">
+                                        <td class="w-1/2 px-6 py-3 whitespace-nowrap">
                                             <div class="flex items-center">
                                                 <div class="flex-shrink-0 h-16 w-16 overflow-hidden rounded-lg border border-slate-200 shadow-sm bg-slate-50 relative group">
                                                     @if($product->image)
-                                                        <img class="h-16 w-16 object-cover group-hover:scale-110 transition-transform duration-300 cursor-zoom-in" src="{{ $product->image_url }}" alt="" onclick="openImageModal('{{ $product->image_url }}', '{{ addslashes($product->name) }}')">
+                                                        <img class="h-16 w-16 object-cover group-hover:scale-110 transition-transform duration-300 cursor-zoom-in" src="{{ $product->image_url }}" alt="" loading="lazy" onclick="openImageModal('{{ $product->image_url }}', '{{ addslashes($product->name) }}')">
                                                         <div class="absolute inset-0 bg-slate-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center pointer-events-none">
                                                             <svg class="w-5 h-5 text-white drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7"></path></svg>
                                                         </div>
@@ -94,37 +94,40 @@
                                             </div>
                                         </td>
 
-                                        <td class="px-6 py-4 whitespace-nowrap text-left text-sm">
+                                        <td class="w-1/6 px-6 py-4 whitespace-nowrap text-left text-sm">
                                             <span class="text-indigo-600 font-bold">{{ number_format($product->price, 2) }} DH</span>
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-left text-sm">
-                                            @if($product->stock_status === 'out')
-                                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold" style="background:#fee2e2;color:#b91c1c;">
-                                                    <span style="width:7px;height:7px;border-radius:50%;background:#ef4444;display:inline-block;"></span>
-                                                    Rupture (0)
+                                        <td class="w-1/6 px-6 py-4 whitespace-nowrap text-left text-sm">
+                                            @if($product->stock_quantity <= 0)
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border" style="background:#fef2f2;color:#991b1b;border-color:#fca5a5;">
+                                                    <span style="width:6px;height:6px;border-radius:50%;background:#ef4444;display:inline-block;margin-right:8px;"></span>
+                                                    0
                                                 </span>
-                                            @elseif($product->stock_status === 'low')
-                                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold" style="background:#ffedd5;color:#c2410c;">
-                                                    <span style="width:7px;height:7px;border-radius:50%;background:#f97316;display:inline-block;"></span>
-                                                    Faible ({{ $product->stock_quantity }})
+                                            @elseif($product->stock_quantity <= $product->min_stock)
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border" style="background:#fff7ed;color:#9a3412;border-color:#fdba74;">
+                                                    <span style="width:6px;height:6px;border-radius:50%;background:#f97316;display:inline-block;margin-right:8px;"></span>
+                                                    {{ $product->stock_quantity }}
                                                 </span>
                                             @else
-                                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold" style="background:#dcfce7;color:#15803d;">
-                                                    <span style="width:7px;height:7px;border-radius:50%;background:#22c55e;display:inline-block;"></span>
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border" style="background:#f0fdf4;color:#166534;border-color:#86efac;">
+                                                    <span style="width:6px;height:6px;border-radius:50%;background:#22c55e;display:inline-block;margin-right:8px;"></span>
                                                     {{ $product->stock_quantity }}
                                                 </span>
                                             @endif
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <td class="w-1/6 px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                             <div class="flex items-center justify-end gap-2">
-                                                <a href="{{ route('products.edit', $product) }}" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 hover:bg-indigo-100 p-2 rounded-lg transition-colors border border-indigo-100" title="Modifier">
-                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                                                <button @click="showStockModal = true; selectedProductName = '{{ addslashes($product->name) }}'; selectedProductUrl = '{{ route('products.add-stock', $product) }}'; currentStock = {{ $product->stock_quantity }}; quantity = 1" type="button" class="text-emerald-600 hover:text-emerald-900 bg-emerald-50 hover:bg-emerald-100 p-2.5 rounded-lg transition-colors border border-emerald-100" title="Ajouter au stock">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
+                                                </button>
+                                                <a href="{{ route('products.edit', $product) }}" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 hover:bg-indigo-100 p-2.5 rounded-lg transition-colors border border-indigo-100" title="Modifier">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
                                                 </a>
                                                 <form action="{{ route('products.destroy', $product) }}" method="POST" class="inline-block" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce produit ? Cette action est irréversible.');">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="text-red-600 hover:text-red-900 bg-red-50 hover:bg-red-100 p-2 rounded-lg transition-colors border border-red-100" title="Supprimer">
-                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                                    <button type="submit" class="text-red-600 hover:text-red-900 bg-red-50 hover:bg-red-100 p-2.5 rounded-lg transition-colors border border-red-100" title="Supprimer">
+                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                                                     </button>
                                                 </form>
                                             </div>
@@ -161,6 +164,53 @@
         </div>
         @endif
     </div>
+    
+    <!-- Quick Stock Modal -->
+    <div x-cloak x-show="showStockModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-opacity duration-300">
+        <div @click.away="showStockModal = false" class="relative w-full bg-white rounded-2xl overflow-hidden shadow-2xl border border-slate-100 transform transition-all p-6" style="max-width: 460px;">
+            <div class="flex justify-between items-start mb-4 pb-3 border-b border-slate-100">
+                <div class="min-w-0 pr-4">
+                    <h3 class="font-bold text-slate-900 text-lg">
+                        Ajouter au stock
+                    </h3>
+                    <p class="text-sm text-slate-500 mt-0.5 truncate font-medium" x-text="selectedProductName" :title="selectedProductName"></p>
+                </div>
+                <button @click="showStockModal = false" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-100 transition-colors flex-shrink-0">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            
+            <form :action="selectedProductUrl" method="POST" class="space-y-4">
+                @csrf
+                
+                <!-- Stock Preview Panel -->
+                <div class="grid grid-cols-2 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-100">
+                    <div class="text-center border-r border-slate-200 pr-2">
+                        <p class="text-xs text-slate-500 font-bold uppercase tracking-wider">Stock Actuel</p>
+                        <p class="text-3xl font-extrabold text-slate-700 mt-1" x-text="currentStock"></p>
+                    </div>
+                    <div class="text-center pl-2">
+                        <p class="text-xs text-slate-500 font-bold uppercase tracking-wider">Nouveau Stock</p>
+                        <p class="text-3xl font-extrabold text-indigo-600 mt-1" x-text="parseInt(currentStock) + (parseInt(quantity) || 0)"></p>
+                    </div>
+                </div>
+
+                <div>
+                    <label for="modal_quantity" class="block text-sm font-semibold text-slate-700 mb-1">Quantité à ajouter *</label>
+                    <input type="number" id="modal_quantity" name="quantity" min="1" required x-model="quantity"
+                        class="block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2.5 border bg-white" placeholder="Ex: 10">
+                </div>
+                <div class="flex justify-end gap-3 pt-2">
+                    <button type="button" @click="showStockModal = false" class="inline-flex justify-center rounded-lg border border-slate-300 bg-white py-2 px-4 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors">
+                        Annuler
+                    </button>
+                    <button type="submit" class="inline-flex justify-center rounded-lg border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors">
+                        Confirmer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 <!-- Image Preview Modal -->
@@ -181,7 +231,7 @@
 </div>
 
 <script>
-document.addEventListener('turbo:load', function() {
+(function() {
     const searchInput = document.getElementById('searchInput');
     const tabs = document.querySelectorAll('.filter-tab');
     const rows = document.querySelectorAll('.product-row');
@@ -235,7 +285,6 @@ document.addEventListener('turbo:load', function() {
             }
         });
 
-        // Toggle empty state if we have rows but none are visible
         if (totalVisible === 0 && rows.length > 0) {
             emptyState.style.display = '';
         } else {
@@ -252,7 +301,6 @@ document.addEventListener('turbo:load', function() {
 
     tabs.forEach(tab => {
         tab.addEventListener('click', function() {
-            // Update active styling
             tabs.forEach(t => {
                 t.classList.remove('bg-indigo-100', 'text-indigo-700', 'border-indigo-200', 'shadow-sm', 'active-tab');
                 t.classList.add('bg-white', 'text-slate-600', 'border-slate-200', 'hover:bg-slate-50');
@@ -266,7 +314,6 @@ document.addEventListener('turbo:load', function() {
         });
     });
     
-    // Add reset functionality
     const resetBtn = document.getElementById('resetFiltersBtn');
     if(resetBtn) {
         resetBtn.addEventListener('click', function() {
@@ -276,14 +323,13 @@ document.addEventListener('turbo:load', function() {
             if(allTab) allTab.click();
         });
     }
-});
 
-// Clean up event listeners when Turbo caches the page,
-// preventing duplicate listeners on back-navigation
-document.addEventListener('turbo:before-cache', function() {
-    const searchInput = document.getElementById('searchInput');
-    if (searchInput) searchInput.value = '';
-});
+    const cleanup = function() {
+        if (searchInput) searchInput.value = '';
+        document.removeEventListener('turbo:before-cache', cleanup);
+    };
+    document.addEventListener('turbo:before-cache', cleanup);
+})();
 
 function openImageModal(url, name) {
     const modal = document.getElementById('imagePreviewModal');
@@ -322,4 +368,6 @@ function closeImageModal() {
     }, 300);
 }
 </script>
+
+
 @endsection

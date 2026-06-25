@@ -50,7 +50,15 @@
                                 INV-{{ str_pad($invoice->id, 5, '0', STR_PAD_LEFT) }}
                             </a>
                         </td>
-                        <td class="whitespace-nowrap px-3 py-4 text-sm text-slate-600 font-medium">{{ $invoice->customer_name }}</td>
+                        <td class="whitespace-nowrap px-3 py-4 text-sm text-slate-600 font-medium">
+                            @if($invoice->client)
+                                <a href="{{ route('clients.show', $invoice->client) }}" class="hover:underline text-slate-800 font-semibold">
+                                    {{ $invoice->client->name }}
+                                </a>
+                            @else
+                                <span class="text-slate-400">—</span>
+                            @endif
+                        </td>
                         <td class="whitespace-nowrap px-3 py-4 text-sm text-slate-500">
                             <span class="inline-flex items-center rounded-md bg-slate-100 px-2 py-1 text-xs font-medium text-slate-600 ring-1 ring-inset ring-slate-500/10">{{ $invoice->items_count }} articles</span>
                         </td>

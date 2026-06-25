@@ -18,7 +18,6 @@
         .items-table th { padding: 10px 12px; background-color: #f8fafc; border-bottom: 2px solid #1f2937; text-align: left; font-size: 11px; text-transform: uppercase; }
         .items-table td { padding: 8px 12px; border-bottom: 1px solid #f3f4f6; font-size: 13px; }
         .product-name { font-weight: bold; color: #1f2937; }
-        .product-size { display: inline-block; font-size: 11px; color: #6b7280; background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 4px; padding: 1px 6px; margin-left: 6px; vertical-align: middle; }
         .text-center { text-align: center !important; }
         .text-right { text-align: right !important; }
         .items-table tfoot .total-row td {
@@ -56,7 +55,16 @@
         <tr>
             <td>
                 <div class="info-label">Facturé à :</div>
-                <div class="info-value">{{ $invoice->customer_name }}</div>
+                <div class="info-value">
+                    @if($invoice->client)
+                        {{ $invoice->client->name }}
+                        @if($invoice->client->phone)
+                            <div style="font-size: 13px; font-weight: normal; color: #4b5563; margin-top: 3px;">Tél : {{ $invoice->client->phone }}</div>
+                        @endif
+                    @else
+                        —
+                    @endif
+                </div>
             </td>
             <td class="text-right">
                 <div class="info-label">Date d'émission :</div>
@@ -79,9 +87,6 @@
             <tr>
                 <td>
                     <span class="product-name">{{ $item->product->name }}</span>
-                    @if($item->product->size)
-                        <span class="product-size">{{ $item->product->size }}</span>
-                    @endif
                 </td>
                 <td class="text-center">{{ $item->quantity }}</td>
                 <td class="text-center">{{ number_format($item->unit_price, 2) }} DH</td>

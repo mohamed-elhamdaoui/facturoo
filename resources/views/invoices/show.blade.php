@@ -35,7 +35,14 @@
         <div class="flex flex-col sm:flex-row justify-between mb-10 gap-6">
             <div>
                 <p class="text-xs text-slate-400 mb-1 uppercase tracking-wider font-bold">Facturé à</p>
-                <h4 class="text-lg font-semibold text-slate-900">{{ $invoice->customer_name }}</h4>
+                @if($invoice->client)
+                    <h4 class="text-lg font-semibold text-slate-900">{{ $invoice->client->name }}</h4>
+                    @if($invoice->client->phone)
+                        <p class="text-sm text-slate-500 mt-0.5">Tél : {{ $invoice->client->phone }}</p>
+                    @endif
+                @else
+                    <h4 class="text-lg font-semibold text-slate-400">—</h4>
+                @endif
             </div>
             <div class="text-left sm:text-right">
                 <p class="text-xs text-slate-400 mb-1 uppercase tracking-wider font-bold">Date d'émission</p>
@@ -59,9 +66,6 @@
                     <tr class="hover:bg-slate-50/50">
                         <td class="py-2.5 px-4">
                             <span class="text-sm font-semibold text-slate-900">{{ $item->product->name }}</span>
-                            @if($item->product->size)
-                                <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200">{{ $item->product->size }}</span>
-                            @endif
                         </td>
                         <td class="py-2.5 px-4 text-sm font-semibold text-slate-700 text-center">× {{ $item->quantity }}</td>
                         <td class="py-2.5 px-4 text-sm text-slate-600 text-right">{{ number_format($item->unit_price, 2) }} DH</td>

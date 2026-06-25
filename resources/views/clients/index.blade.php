@@ -73,14 +73,14 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <div class="flex items-center justify-end gap-2">
-                                        <a href="{{ route('clients.edit', $client) }}" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 hover:bg-indigo-100 p-2 rounded-lg transition-colors border border-indigo-100" title="Modifier">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                                        <a href="{{ route('clients.edit', $client) }}" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 hover:bg-indigo-100 p-2.5 rounded-lg transition-colors border border-indigo-100" title="Modifier">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
                                         </a>
                                         <button type="button"
                                                 x-on:click="deleteUrl = '{{ route('clients.destroy', $client) }}'; openDeleteModal = true"
-                                                class="text-red-600 hover:text-red-900 bg-red-50 hover:bg-red-100 p-2 rounded-lg transition-colors border border-red-100"
+                                                class="text-red-600 hover:text-red-900 bg-red-50 hover:bg-red-100 p-2.5 rounded-lg transition-colors border border-red-100"
                                                 title="Supprimer">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                                         </button>
                                     </div>
                                 </td>
@@ -118,7 +118,7 @@
              x-transition:leave-start="opacity-100 scale-100"
              x-transition:leave-end="opacity-0 scale-95"
              x-on:click.outside="openDeleteModal = false"
-             class="relative max-w-md w-full bg-white rounded-2xl p-6 shadow-2xl border border-slate-100">
+             class="relative w-full bg-white rounded-2xl p-6 shadow-2xl border border-slate-100" style="max-width: 540px;">
 
             <div class="flex items-start gap-4">
                 <div class="flex-shrink-0 bg-red-100 text-red-600 rounded-full p-2.5">
@@ -151,7 +151,7 @@
 </div>
 
 <script>
-document.addEventListener('turbo:load', function() {
+(function() {
     const searchInput = document.getElementById('searchInput');
     const rows = document.querySelectorAll('.client-row');
     const emptyState = document.getElementById('emptyFilterState');
@@ -178,11 +178,12 @@ document.addEventListener('turbo:load', function() {
             }
         });
     }
-});
 
-document.addEventListener('turbo:before-cache', function() {
-    const searchInput = document.getElementById('searchInput');
-    if (searchInput) searchInput.value = '';
-});
+    const cleanup = function() {
+        if (searchInput) searchInput.value = '';
+        document.removeEventListener('turbo:before-cache', cleanup);
+    };
+    document.addEventListener('turbo:before-cache', cleanup);
+})();
 </script>
 @endsection

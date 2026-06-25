@@ -1,58 +1,236 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Facturo 🧾
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A modern invoicing and inventory management web application built with **Laravel 13**, **Tailwind CSS 4**, and **Alpine.js**. Designed for small to medium-sized businesses to manage clients, products, stock movements, and PDF invoices — all from a clean, fast interface.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## ✨ Features
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 📋 Dashboard
+- Real-time overview of key business metrics
+- Total invoices, clients, and revenue at a glance
+- Low stock alerts with quick navigation
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 👥 Client Management
+- Create, edit, and delete clients
+- Store name, phone, and address information
+- View invoice history per client
+- Search clients by name or phone (AJAX-powered)
+- Prevent deletion of clients with existing invoices
 
-## Learning Laravel
+### 📦 Product & Inventory Management
+- Create products with category, name, size, price, and image
+- Track stock quantity with a configurable minimum stock threshold
+- Manual stock adjustments (add stock entries with reason)
+- Visual stock status indicators: `In Stock`, `Low Stock`, `Out of Stock`
+- Product images stored and served securely
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 🧾 Invoice Management
+- Create invoices linked to a specific client
+- Add multiple products (line items) per invoice with automatic subtotal calculation
+- Automatic stock deduction on invoice creation
+- Stock restoration on invoice deletion
+- View invoice details with full line-item breakdown
+- Paginated invoice listing (10 per page)
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 📄 PDF Export
+- Download any invoice as a professionally formatted PDF
+- Powered by `barryvdh/laravel-dompdf`
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+### 📊 Stock Movements
+- Automatic tracking of every stock change (sales & manual entries)
+- Movement history with type (`sortie` / `entrée`), quantity, and reason
+- Linked to the triggering invoice for traceability
 
-## Agentic Development
+### 🔐 Authentication
+- Secure login / registration system powered by **Laravel Breeze**
+- All routes are protected behind authentication middleware
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+---
 
-```bash
-composer require laravel/boost --dev
+## 🛠️ Tech Stack
 
-php artisan boost:install
+| Layer        | Technology                          |
+|--------------|--------------------------------------|
+| Backend      | PHP 8.3, Laravel 13                 |
+| Frontend     | Blade Templates, Tailwind CSS 4, Alpine.js |
+| Build Tool   | Vite 8                              |
+| Database     | MySQL                               |
+| PDF Engine   | barryvdh/laravel-dompdf             |
+| Auth         | Laravel Breeze                      |
+| HTTP Client  | Axios                               |
+| Navigation   | Hotwire Turbo                       |
+
+---
+
+## 📁 Project Structure
+
+```
+facturo/
+├── app/
+│   ├── Http/Controllers/
+│   │   ├── DashboardController.php
+│   │   ├── ClientController.php
+│   │   ├── ProductController.php
+│   │   ├── InvoiceController.php
+│   ├── Models/
+│   │   ├── Client.php
+│   │   ├── Product.php
+│   │   ├── Invoice.php
+│   │   ├── InvoiceItem.php
+│   │   ├── StockMovement.php
+│   │   └── User.php
+├── resources/views/
+│   ├── dashboard.blade.php
+│   ├── clients/
+│   ├── products/
+│   ├── invoices/
+│   ├── stock/
+│   └── layouts/
+├── database/migrations/
+├── routes/
+│   └── web.php
+└── public/
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+---
 
-## Contributing
+## 🚀 Getting Started
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Prerequisites
 
-## Code of Conduct
+- PHP >= 8.3
+- Composer
+- Node.js >= 18 & npm
+- MySQL
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Installation
 
-## Security Vulnerabilities
+**1. Clone the repository**
+```bash
+git clone https://github.com/mohamed-elhamdaoui/facturo.git
+cd facturo
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+**2. Install PHP dependencies**
+```bash
+composer install
+```
 
-## License
+**3. Install Node dependencies**
+```bash
+npm install
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+**4. Configure environment**
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+
+**5. Set up your database** in `.env`:
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=facturo
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
+```
+
+**6. Run migrations**
+```bash
+php artisan migrate
+```
+
+**7. Create storage symlink** (for product images)
+```bash
+php artisan storage:link
+```
+
+**8. Build frontend assets**
+```bash
+npm run build
+```
+
+**9. Start the development server**
+```bash
+composer run dev
+```
+
+> This command starts Laravel, Queue, Log watcher, and Vite concurrently.
+
+The application will be available at: **http://localhost:8000**
+
+---
+
+## ⚡ Quick Setup (One Command)
+
+```bash
+composer run setup
+```
+
+This will automatically: install dependencies, generate app key, run migrations, and build frontend assets.
+
+---
+
+## 🌐 Deployment (DockHosting CLI)
+
+This project is configured for deployment via **DockHosting** using the `dock` CLI.
+
+```bash
+# Install the CLI
+npm install -g dockhosting-cli
+
+# Login to your account
+dock login
+
+# Deploy from local directory
+dock deploy
+```
+
+The project configuration is stored in [`.dock/dock.json`](.dock/dock.json).
+
+---
+
+## 🗺️ Routes Overview
+
+| Method | URI | Action |
+|--------|-----|--------|
+| GET | `/` | Dashboard |
+| GET/POST | `/clients` | List / Create clients |
+| GET | `/clients/search` | AJAX client search |
+| GET/PUT/DELETE | `/clients/{id}` | View / Edit / Delete client |
+| GET/POST | `/products` | List / Create products |
+| GET/PUT/DELETE | `/products/{id}` | View / Edit / Delete product |
+| POST | `/products/{id}/add-stock` | Add stock manually |
+| GET/POST | `/invoices` | List / Create invoices |
+| GET | `/invoices/{id}` | View invoice |
+| DELETE | `/invoices/{id}` | Delete invoice (restores stock) |
+| GET | `/invoices/{id}/download` | Download invoice as PDF |
+
+---
+
+## 📸 Screenshots
+
+> _Coming soon_
+
+---
+
+## 🤝 Contributing
+
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+---
+
+## 📄 License
+
+This project is open-source and available under the [MIT License](LICENSE).
+
+---
+
+## 👤 Author
+
+**Mohamed El Hamdaoui**
+- GitHub: [@mohamed-elhamdaoui](https://github.com/mohamed-elhamdaoui)
+- Email: mhamdaouiyy@gmail.com

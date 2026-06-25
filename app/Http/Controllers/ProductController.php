@@ -48,6 +48,9 @@ class ProductController extends Controller
     public function update(UpdateProductRequest $request, Product $product)
     {
         $data = $request->validated();
+        
+        // Defensive check: do not allow standard product edit form to modify stock fields
+        unset($data['stock_quantity'], $data['min_stock']);
 
         if ($request->hasFile('image')) {
             // Delete old image if exists
@@ -76,5 +79,30 @@ class ProductController extends Controller
         $product->delete();
 
         return redirect()->route('products.index')->with('success', 'Produit supprimé avec succès.');
+    }
+
+    public function addStock(\Illuminate\Http\Request $request, Product $product)
+    {
+        $data = $request->validate([
+            'quantity' => 'required|integer|min:1',
+        ], [
+            'quantity.required' => 'La quantité est obligatoire.',
+            'quantity.integer' => 'La quantité doit être un nombre entier.',
+            'quantity.min' => 'La quantité doit être supérieure ou égale à 1.',
+        ]);
+
+        $quantity = (int)$data['quantity'];
+
+        \Illuminate\Support\Facades\DB::transaction(function () use ($product, $quantity) {
+            $product->increment('stock_quantity', $quantity);
+
+            $product->stockMovements()->create([
+                'type' => 'entrée',
+                'quantity' => $quantity,
+                'reason' => 'entrée manuelle',
+            ]);
+        });
+
+        return redirect()->route('products.index')->with('success', "Stock mis à jour avec succès (+{$quantity} pour {$product->name}).");
     }
 }

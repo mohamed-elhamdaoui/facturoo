@@ -29,7 +29,7 @@ class Product extends Model
 
     public function getImageUrlAttribute(): ?string
     {
-        if (!$this->image || !\Illuminate\Support\Facades\Storage::disk('public')->exists($this->image)) {
+        if (!$this->image) {
             return null;
         }
         return asset('storage/' . $this->image);

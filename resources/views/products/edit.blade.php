@@ -84,28 +84,6 @@
             @enderror
         </div>
         
-        <!-- Stock -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div>
-                <label for="stock_quantity" class="block text-sm font-medium text-slate-700">Quantité en stock</label>
-                <input type="number" min="0" id="stock_quantity" name="stock_quantity" value="{{ old('stock_quantity', $product->stock_quantity) }}"
-                    class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2.5 border @error('stock_quantity') border-red-500 @enderror">
-                <p class="mt-1 text-xs text-slate-400">Pour modifier le stock, utilisez la page <a href="{{ route('stock.create') }}" class="text-indigo-600 hover:underline">Entrée de stock</a>.</p>
-                @error('stock_quantity')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
-            </div>
-            <div>
-                <label for="min_stock" class="block text-sm font-medium text-slate-700">Seuil d'alerte (min)</label>
-                <input type="number" min="0" id="min_stock" name="min_stock" value="{{ old('min_stock', $product->min_stock) }}"
-                    class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2.5 border @error('min_stock') border-red-500 @enderror">
-                <p class="mt-1 text-xs text-slate-400">Alerte orange en dessous de ce seuil.</p>
-                @error('min_stock')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
-            </div>
-        </div>
-
         <div class="pt-5 mt-5 border-t border-slate-200 flex justify-end gap-3">
             <a href="{{ route('products.index') }}" class="inline-flex justify-center rounded-lg border border-slate-300 bg-white py-2 px-4 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors">
                 Annuler
@@ -124,9 +102,6 @@
             <h3 class="text-base font-semibold text-slate-900">Historique des mouvements de stock</h3>
             <p class="mt-0.5 text-xs text-slate-500">Toutes les entrées et sorties de stock pour ce produit.</p>
         </div>
-        <a href="{{ route('stock.create') }}" class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-white rounded-lg transition-colors" style="background-color:#4f46e5;">
-            + Entrée de stock
-        </a>
     </div>
 
     @if($product->stockMovements->isEmpty())

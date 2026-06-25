@@ -19,10 +19,20 @@
                 </div>
                 <div class="p-6">
                     <div>
-                        <label for="customer_name" class="block text-sm font-medium text-slate-700 mb-1">Nom complet ou Entreprise *</label>
-                        <input type="text" id="customer_name" name="customer_name" value="{{ old('customer_name') }}" required
-                            class="block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2.5 border @error('customer_name') border-red-500 @enderror" placeholder="Ex: Jean Dupont">
-                        @error('customer_name')
+                        <div class="flex justify-between items-center mb-1.5">
+                            <label for="client_id" class="block text-sm font-medium text-slate-700">Sélectionner un Client *</label>
+                            <a href="{{ route('clients.create') }}" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 transition-colors">+ Nouveau Client</a>
+                        </div>
+                        <select id="client_id" name="client_id" required
+                            class="block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2.5 border bg-white @error('client_id') border-red-500 @enderror">
+                            <option value="">Sélectionnez un client...</option>
+                            @foreach($clients as $client)
+                                <option value="{{ $client->id }}" {{ old('client_id') == $client->id ? 'selected' : '' }}>
+                                    {{ $client->name }} {{ $client->phone ? '(' . $client->phone . ')' : '' }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('client_id')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
@@ -84,7 +94,7 @@
         Object.keys(groups).sort().forEach(cat => {
             html += `<optgroup label="${cat}">`;
             groups[cat].forEach(p => {
-                const label = p.size ? `${p.name} — ${p.size}` : p.name;
+                const label = p.name;
                 html += `<option value="${p.id}" data-price="${p.price}">${label}</option>`;
             });
             html += '</optgroup>';
@@ -188,14 +198,12 @@
         }
     }
 
-    // Use turbo:load instead of DOMContentLoaded so the form
-    // initializes correctly after Turbo navigation (not just on first page load)
-    document.addEventListener('turbo:load', () => {
+    (function() {
         const container = document.getElementById('invoice-items-container');
         if (container && container.children.length === 0) {
             rowCount = 0;
             addInvoiceRow();
         }
-    });
+    })();
 </script>
 @endsection
