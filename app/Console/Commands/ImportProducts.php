@@ -26,7 +26,7 @@ class ImportProducts extends Command
      */
     public function handle()
     {
-        $file = base_path('backup_clean.sql');
+        $file = base_path('backup.sql.utf8');
         
         if (!file_exists($file)) {
             $this->error("backup_clean.sql not found!");
@@ -38,6 +38,14 @@ class ImportProducts extends Command
         // Find the INSERT INTO `products` query
         if (preg_match('/INSERT INTO `products` VALUES .*?;/s', $sql, $matches)) {
             $query = $matches[0];
+            
+            // The old SQL dump doesn't specify columns, but our new DB has extra columns (stock_quantity, min_stock).
+            // We need to inject the explicit column names so the insert works correctly.
+            $query = str_replace(
+                'INSERT INTO `products` VALUES',
+                'INSERT INTO `products` (`id`, `name`, `category`, `size`, `price`, `image`, `created_at`, `updated_at`) VALUES',
+                $query
+            );
             
             // Clean up DB before inserting to avoid duplicates if it was already imported
             DB::statement('SET FOREIGN_KEY_CHECKS=0;');
