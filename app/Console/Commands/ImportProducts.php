@@ -40,9 +40,11 @@ class ImportProducts extends Command
             $query = $matches[0];
             
             // Clean up DB before inserting to avoid duplicates if it was already imported
+            DB::statement('SET FOREIGN_KEY_CHECKS=0;');
             DB::table('products')->truncate();
             
             DB::unprepared($query);
+            DB::statement('SET FOREIGN_KEY_CHECKS=1;');
             $this->info("Products imported successfully from backup!");
         } else {
             $this->error("Could not find the products INSERT statement in the SQL file.");
