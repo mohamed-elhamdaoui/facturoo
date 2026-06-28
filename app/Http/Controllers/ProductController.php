@@ -84,11 +84,11 @@ class ProductController extends Controller
     public function addStock(\Illuminate\Http\Request $request, Product $product)
     {
         $data = $request->validate([
-            'quantity' => 'required|integer|min:1',
+            'quantity' => 'required|integer|not_in:0',
         ], [
             'quantity.required' => 'La quantité est obligatoire.',
             'quantity.integer' => 'La quantité doit être un nombre entier.',
-            'quantity.min' => 'La quantité doit être supérieure ou égale à 1.',
+            'quantity.not_in' => 'La quantité ne peut pas être zéro.',
         ]);
 
         $quantity = (int)$data['quantity'];
@@ -97,9 +97,9 @@ class ProductController extends Controller
             $product->increment('stock_quantity', $quantity);
 
             $product->stockMovements()->create([
-                'type' => 'entrée',
-                'quantity' => $quantity,
-                'reason' => 'entrée manuelle',
+                'type' => $quantity > 0 ? 'entrée' : 'sortie',
+                'quantity' => abs($quantity),
+                'reason' => 'ajustement manuel (correction)',
             ]);
         });
 

@@ -171,7 +171,7 @@
             <div class="flex justify-between items-start mb-4 pb-3 border-b border-slate-100">
                 <div class="min-w-0 pr-4">
                     <h3 class="font-bold text-slate-900 text-lg">
-                        Ajouter au stock
+                        Ajuster le stock
                     </h3>
                     <p class="text-sm text-slate-500 mt-0.5 truncate font-medium" x-text="selectedProductName" :title="selectedProductName"></p>
                 </div>
@@ -196,9 +196,9 @@
                 </div>
 
                 <div>
-                    <label for="modal_quantity" class="block text-sm font-semibold text-slate-700 mb-1">Quantité à ajouter *</label>
-                    <input type="number" id="modal_quantity" name="quantity" min="1" required x-model="quantity"
-                        class="block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2.5 border bg-white" placeholder="Ex: 10">
+                    <label for="modal_quantity" class="block text-sm font-semibold text-slate-700 mb-1">Quantité (utiliser "-" pour soustraire) *</label>
+                    <input type="number" id="modal_quantity" name="quantity" required x-model="quantity"
+                        class="block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2.5 border bg-white" placeholder="Ex: 10 ou -5">
                 </div>
                 <div class="flex justify-end gap-3 pt-2">
                     <button type="button" @click="showStockModal = false" class="inline-flex justify-center rounded-lg border border-slate-300 bg-white py-2 px-4 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors">
