@@ -26,10 +26,10 @@ class ImportProducts extends Command
      */
     public function handle()
     {
-        $file = base_path('backup.sql.utf8');
+        $file = base_path('backup.utf8.sql');
         
         if (!file_exists($file)) {
-            $this->error("backup_clean.sql not found!");
+            $this->error("backup.utf8.sql not found!");
             return;
         }
 
@@ -46,6 +46,10 @@ class ImportProducts extends Command
                 'INSERT INTO `products` (`id`, `name`, `category`, `size`, `price`, `image`, `created_at`, `updated_at`) VALUES',
                 $query
             );
+
+            // Fix corrupted French characters caused by bad mysqldump encoding
+            $query = preg_replace('/P[^\w\'"\\\]+tes vrac/', 'Pâtes vrac', $query);
+            $query = preg_replace('/P[^\w\'"\\\]+tes ptc/', 'Pâtes ptc', $query);
             
             // Clean up DB before inserting to avoid duplicates if it was already imported
             DB::statement('SET FOREIGN_KEY_CHECKS=0;');
