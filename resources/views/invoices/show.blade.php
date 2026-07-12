@@ -76,7 +76,7 @@
                 <tfoot>
                     <tr class="border-t-2 border-slate-900 font-bold text-slate-900 bg-slate-50/50">
                         <td class="py-4 px-4 text-base">Total TTC</td>
-                        <td class="py-4 px-4"></td>
+                        <td class="py-4 px-4 text-center text-sm text-slate-600">{{ $invoice->items->count() }} article(s)</td>
                         <td class="py-4 px-4"></td>
                         <td class="py-4 px-4 text-right text-lg text-indigo-700 font-extrabold">{{ number_format($invoice->total, 2) }} DH</td>
                     </tr>

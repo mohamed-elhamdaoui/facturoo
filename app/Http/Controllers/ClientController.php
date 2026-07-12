@@ -33,6 +33,14 @@ class ClientController extends Controller
         return redirect()->route('clients.index')->with('success', 'Client créé avec succès.');
     }
 
+    public function show(Client $client)
+    {
+        $client->loadCount('invoices');
+        $client->load(['invoices' => fn($q) => $q->withCount('items')->latest()]);
+        $totalRevenue = $client->invoices->sum('total');
+        return view('clients.show', compact('client', 'totalRevenue'));
+    }
+
     public function edit(Client $client)
     {
         return view('clients.edit', compact('client'));

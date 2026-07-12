@@ -97,7 +97,7 @@
         <tfoot>
             <tr class="total-row">
                 <td class="total-label">Total TTC</td>
-                <td></td>
+                <td class="text-center" style="font-size: 13px; color: #6b7280; font-weight: normal;">{{ $invoice->items->count() }} article(s)</td>
                 <td></td>
                 <td class="total-amount">{{ number_format($invoice->total, 2) }} DH</td>
             </tr>

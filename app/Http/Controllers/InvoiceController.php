@@ -12,10 +12,21 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class InvoiceController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $invoices = Invoice::with(['client'])->withCount('items')->latest()->paginate(10);
-        return view('invoices.index', compact('invoices'));
+        $clientId = $request->query('client_id');
+
+        $query = Invoice::with(['client'])->withCount('items')->latest();
+
+        if ($clientId) {
+            $query->where('client_id', $clientId);
+        }
+
+        $invoices = $query->paginate(10)->withQueryString();
+        $clients = \App\Models\Client::orderBy('name')->get(['id', 'name']);
+        $selectedClient = $clientId ? \App\Models\Client::find($clientId) : null;
+
+        return view('invoices.index', compact('invoices', 'clients', 'selectedClient'));
     }
 
     public function create()

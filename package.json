@@ -4,7 +4,8 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
-        "dev": "vite"
+        "dev": "vite",
+        "sync-db": "node sync-db.js"
     },
     "devDependencies": {
         "@tailwindcss/forms": "^0.5.2",
