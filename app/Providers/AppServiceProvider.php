@@ -19,6 +19,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        if (str_contains(request()->getHost(), 'loca.lt') || str_contains(request()->getHost(), 'dockhosting.dev')) {
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        }
     }
 }

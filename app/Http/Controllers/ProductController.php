@@ -6,6 +6,7 @@ use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Models\Product;
 use Illuminate\Support\Facades\Storage;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ProductController extends Controller
 {
@@ -14,6 +15,18 @@ class ProductController extends Controller
         // Fetch all products for real-time frontend filtering
         $products = Product::orderBy('category')->orderBy('name')->get();
         return view('products.index', compact('products'));
+    }
+
+    public function downloadStockReport()
+    {
+        $products = Product::orderBy('category')->orderBy('name')->get();
+
+        $pdf = Pdf::loadView('products.stock-report', compact('products'))
+            ->setPaper('a4', 'portrait');
+
+        $filename = 'stock-rapport-' . now()->format('Y-m-d') . '.pdf';
+
+        return $pdf->download($filename);
     }
 
     public function create()
