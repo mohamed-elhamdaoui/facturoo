@@ -32,7 +32,7 @@ class Product extends Model
         if (!$this->image) {
             return null;
         }
-        return asset('storage/' . $this->image);
+        return asset('product-images/' . $this->image);
     }
 
     public function getStockStatusAttribute(): string

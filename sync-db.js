@@ -123,13 +123,13 @@ echo "INSERT INTO \`${table}\` ($colStr) VALUES\\n".implode(",\\n",$vals).";";
 
     // 6. Synchronize Images
     console.log('\n🖼️ Synchronizing images...');
-    const localProductsDir = path.join(process.cwd(), 'storage', 'app', 'public', 'products');
+    const localProductsDir = path.join(process.cwd(), 'public', 'product-images');
     if (!fs.existsSync(localProductsDir)) {
         fs.mkdirSync(localProductsDir, { recursive: true });
     }
 
     const filesRaw = await execPhp(`
-$files = glob('/var/www/html/storage/app/public/products/*');
+$files = glob('/var/www/html/public/product-images/*');
 echo implode("\\n", $files);
     `.trim());
 
