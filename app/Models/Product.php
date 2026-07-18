@@ -32,7 +32,8 @@ class Product extends Model
         if (!$this->image) {
             return null;
         }
-        return asset('product-images/' . $this->image);
+        // image is stored as 'products/filename.jpg', extract just the filename
+        return asset('product-images/' . basename($this->image));
     }
 
     public function getStockStatusAttribute(): string
