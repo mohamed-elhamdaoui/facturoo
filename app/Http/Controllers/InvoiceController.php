@@ -44,20 +44,26 @@ class InvoiceController extends Controller
             $invoice = Invoice::create([
                 'client_id' => $data['client_id'],
                 'total'     => 0,
+                'discount_amount' => 0,
             ]);
 
             $grandTotal = 0;
+            $totalDiscountAmount = 0;
 
             foreach ($data['items'] as $itemData) {
                 $product  = Product::findOrFail($itemData['product_id']);
                 $subtotal = $product->price * $itemData['quantity'];
+                
+                $discountPercentage = isset($itemData['discount_percentage']) ? (int)$itemData['discount_percentage'] : 0;
+                $rowDiscount = $subtotal * ($discountPercentage / 100);
 
                 InvoiceItem::create([
                     'invoice_id' => $invoice->id,
                     'product_id' => $product->id,
                     'quantity'   => $itemData['quantity'],
+                    'discount_percentage' => $discountPercentage,
                     'unit_price' => $product->price,
-                    'subtotal'   => $subtotal,
+                    'subtotal'   => $subtotal, // Keep original un-discounted subtotal
                 ]);
 
                 // Decrement product stock
@@ -72,9 +78,13 @@ class InvoiceController extends Controller
                 ]);
 
                 $grandTotal += $subtotal;
+                $totalDiscountAmount += $rowDiscount;
             }
 
-            $invoice->update(['total' => $grandTotal]);
+            $invoice->update([
+                'discount_amount' => $totalDiscountAmount,
+                'total'           => $grandTotal - $totalDiscountAmount, // Total Net to pay
+            ]);
 
             return $invoice;
         });

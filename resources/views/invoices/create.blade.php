@@ -52,7 +52,7 @@
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
                 <div class="px-6 py-5 border-b border-slate-200 bg-slate-50 flex justify-between items-center">
                     <h3 class="text-lg font-semibold text-slate-900">Lignes de la facture</h3>
-                    <button type="button" onclick="addInvoiceRow()" class="text-sm font-medium text-indigo-600 hover:text-indigo-500 flex items-center transition-colors">
+                    <button type="button" onclick="addInvoiceRow()" class="text-sm font-medium text-indigo-600 hover:text-indigo-500 flex items-center transition-colors cursor-pointer">
                         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                         Ajouter une ligne
                     </button>
@@ -64,9 +64,17 @@
                     </div>
                     
                     <div class="mt-8 pt-6 border-t border-slate-200 flex justify-end">
-                        <div class="w-full sm:w-64 bg-slate-50 rounded-lg p-4 border border-slate-200">
-                            <div class="flex justify-between items-center text-lg">
-                                <span class="font-medium text-slate-500">Total TTC:</span>
+                        <div class="w-full sm:w-80 bg-slate-50 rounded-lg p-4 border border-slate-200 space-y-2">
+                            <div class="flex justify-between items-center text-sm">
+                                <span class="font-medium text-slate-500">Total Brut:</span>
+                                <span class="font-semibold text-slate-700" id="total-brut-display">0.00 DH</span>
+                            </div>
+                            <div class="flex justify-between items-center text-sm text-red-600">
+                                <span class="font-medium">Remise :</span>
+                                <span class="font-semibold" id="total-discount-display">-0.00 DH</span>
+                            </div>
+                            <div class="flex justify-between items-center text-lg border-t border-slate-200 pt-2">
+                                <span class="font-medium text-slate-900">Total Net (TTC):</span>
                                 <span class="font-bold text-indigo-600" id="grand-total-display">0.00 DH</span>
                             </div>
                         </div>
@@ -123,19 +131,25 @@
                     <div class="block w-full rounded-lg border border-slate-200 bg-slate-100 sm:text-sm p-2.5 text-slate-500 text-right" id="price-${index}">0.00</div>
                 </div>
 
-                <div class="w-full sm:w-24">
+                <div class="w-full sm:w-20">
                     <label class="block text-xs font-semibold tracking-wide text-slate-500 uppercase mb-1">Qté</label>
                     <input type="number" name="items[${index}][quantity]" id="qty-${index}" min="1" value="1" oninput="updateRow(${index})" required
                         class="block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2.5 border bg-white text-center">
                 </div>
+
+                <div class="w-full sm:w-20">
+                    <label class="block text-xs font-semibold tracking-wide text-slate-500 uppercase mb-1">Remise %</label>
+                    <input type="number" name="items[${index}][discount_percentage]" id="discount-${index}" min="0" max="100" value="0" oninput="updateRow(${index})" required
+                        class="block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2.5 border bg-white text-center">
+                </div>
                 
-                <div class="w-full sm:w-32">
+                <div class="w-full sm:w-28">
                     <label class="block text-xs font-semibold tracking-wide text-slate-500 uppercase mb-1">Total</label>
-                    <div class="block w-full rounded-lg border border-transparent sm:text-sm py-2.5 font-bold text-slate-900 text-right subtotal-display" id="subtotal-${index}" data-value="0">0.00 DH</div>
+                    <div class="block w-full rounded-lg border border-transparent sm:text-sm py-2.5 font-bold text-slate-900 text-right subtotal-display" id="subtotal-${index}" data-value="0" data-discount-percent="0">0.00 DH</div>
                 </div>
 
                 <div class="pt-6 sm:pl-2">
-                    <button type="button" onclick="removeRow(${index})" class="text-slate-400 hover:text-red-600 transition-colors delete-btn" title="Supprimer la ligne">
+                    <button type="button" onclick="removeRow(${index})" class="text-slate-400 hover:text-red-600 transition-colors delete-btn cursor-pointer" title="Supprimer la ligne">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                     </button>
                 </div>
@@ -158,6 +172,7 @@
     function updateRow(index) {
         const select = document.getElementById(`product-${index}`);
         const qtyInput = document.getElementById(`qty-${index}`);
+        const discountInput = document.getElementById(`discount-${index}`);
         const priceDisplay = document.getElementById(`price-${index}`);
         const subtotalDisplay = document.getElementById(`subtotal-${index}`);
 
@@ -171,21 +186,35 @@
         }
 
         const qty = parseInt(qtyInput.value) || 0;
+        const discount = parseInt(discountInput.value) || 0;
         const subtotal = price * qty;
 
         priceDisplay.textContent = price.toFixed(2);
         subtotalDisplay.textContent = subtotal.toFixed(2) + ' DH';
         subtotalDisplay.setAttribute('data-value', subtotal);
+        subtotalDisplay.setAttribute('data-discount-percent', discount);
 
         updateGrandTotal();
     }
 
     function updateGrandTotal() {
-        let total = 0;
+        let totalBrut = 0;
+        let totalDiscount = 0;
+
         document.querySelectorAll('.subtotal-display').forEach(el => {
-            total += parseFloat(el.getAttribute('data-value')) || 0;
+            const rowBrut = parseFloat(el.getAttribute('data-value')) || 0;
+            const discountPercent = parseFloat(el.getAttribute('data-discount-percent')) || 0;
+            const rowDiscount = rowBrut * (discountPercent / 100);
+
+            totalBrut += rowBrut;
+            totalDiscount += rowDiscount;
         });
-        document.getElementById('grand-total-display').textContent = total.toFixed(2) + ' DH';
+
+        const totalNet = totalBrut - totalDiscount;
+
+        document.getElementById('total-brut-display').textContent = totalBrut.toFixed(2) + ' DH';
+        document.getElementById('total-discount-display').textContent = '-' + totalDiscount.toFixed(2) + ' DH';
+        document.getElementById('grand-total-display').textContent = totalNet.toFixed(2) + ' DH';
     }
 
     function updateDeleteButtons() {

@@ -79,6 +79,7 @@
                 <th>Description</th>
                 <th class="text-center">Qté</th>
                 <th class="text-center">Prix U.</th>
+                <th class="text-center">Remise</th>
                 <th class="text-right">Montant</th>
             </tr>
         </thead>
@@ -90,16 +91,31 @@
                 </td>
                 <td class="text-center">{{ $item->quantity }}</td>
                 <td class="text-center">{{ number_format($item->unit_price, 2) }} DH</td>
+                <td class="text-center" style="{{ $item->discount_percentage > 0 ? 'color: #dc2626; font-weight: bold;' : 'color: #9ca3af;' }}">
+                    {{ $item->discount_percentage > 0 ? $item->discount_percentage . '%' : '0%' }}
+                </td>
                 <td class="text-right"><strong>{{ number_format($item->subtotal, 2) }} DH</strong></td>
             </tr>
             @endforeach
         </tbody>
         <tfoot>
+            @if($invoice->discount_amount > 0)
+            <tr style="font-size: 12px; color: #4b5563;">
+                <td colspan="2" style="padding: 6px 12px; border-top: 1px solid #e5e7eb;">Total Brut</td>
+                <td colspan="2" style="padding: 6px 12px; border-top: 1px solid #e5e7eb;"></td>
+                <td class="text-right" style="padding: 6px 12px; border-top: 1px solid #e5e7eb; font-weight: bold;">{{ number_format($invoice->subtotal, 2) }} DH</td>
+            </tr>
+            <tr style="font-size: 12px; color: #dc2626;">
+                <td colspan="2" style="padding: 6px 12px;">Remise</td>
+                <td colspan="2" style="padding: 6px 12px;"></td>
+                <td class="text-right" style="padding: 6px 12px; font-weight: bold;">-{{ number_format($invoice->discount_amount, 2) }} DH</td>
+            </tr>
+            @endif
             <tr class="total-row">
-                <td class="total-label">Total TTC</td>
-                <td class="text-center" style="font-size: 13px; color: #6b7280; font-weight: normal;">{{ $invoice->items->count() }} article(s)</td>
-                <td></td>
-                <td class="total-amount">{{ number_format($invoice->total, 2) }} DH</td>
+                <td class="total-label" colspan="2" style="{{ $invoice->discount_amount > 0 ? 'border-top: 1px solid #e5e7eb; padding-top: 10px;' : '' }}">Total TTC</td>
+                <td class="text-center" style="font-size: 13px; color: #6b7280; font-weight: normal; {{ $invoice->discount_amount > 0 ? 'border-top: 1px solid #e5e7eb; padding-top: 10px;' : '' }}"></td>
+                <td class="text-center" style="font-size: 13px; color: #6b7280; font-weight: normal; {{ $invoice->discount_amount > 0 ? 'border-top: 1px solid #e5e7eb; padding-top: 10px;' : '' }}">{{ $invoice->items->count() }} article(s)</td>
+                <td class="total-amount" style="{{ $invoice->discount_amount > 0 ? 'border-top: 1px solid #e5e7eb; padding-top: 10px;' : '' }}">{{ number_format($invoice->total, 2) }} DH</td>
             </tr>
         </tfoot>
     </table>

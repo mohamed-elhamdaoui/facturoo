@@ -18,6 +18,7 @@ class StoreInvoiceRequest extends FormRequest
             'items' => ['required', 'array', 'min:1'],
             'items.*.product_id' => ['required', 'exists:products,id'],
             'items.*.quantity' => ['required', 'integer', 'min:1'],
+            'items.*.discount_percentage' => ['nullable', 'integer', 'min:0', 'max:100'],
         ];
     }
 }

@@ -58,6 +58,7 @@
                         <th class="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Produit</th>
                         <th class="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-center">Qté</th>
                         <th class="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Prix U.</th>
+                        <th class="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Remise</th>
                         <th class="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Montant</th>
                     </tr>
                 </thead>
@@ -69,15 +70,29 @@
                         </td>
                         <td class="py-2.5 px-4 text-sm font-semibold text-slate-700 text-center">× {{ $item->quantity }}</td>
                         <td class="py-2.5 px-4 text-sm text-slate-600 text-right">{{ number_format($item->unit_price, 2) }} DH</td>
-                        <td class="py-2.5 px-4 text-sm font-bold text-indigo-700 text-right">{{ number_format($item->subtotal, 2) }} DH</td>
+                        <td class="py-2.5 px-4 text-sm text-right {{ $item->discount_percentage > 0 ? 'text-red-600 font-semibold' : 'text-slate-400' }}">
+                            {{ $item->discount_percentage > 0 ? $item->discount_percentage . '%' : '0%' }}
+                        </td>
+                        <td class="py-2.5 px-4 text-sm font-bold text-slate-900 text-right">{{ number_format($item->subtotal, 2) }} DH</td>
                     </tr>
                     @endforeach
                 </tbody>
                 <tfoot>
+                    @if($invoice->discount_amount > 0)
+                    <tr class="border-t border-slate-200 text-slate-600">
+                        <td class="py-2.5 px-4 font-medium" colspan="2">Total Brut</td>
+                        <td class="py-2.5 px-4" colspan="2"></td>
+                        <td class="py-2.5 px-4 text-right font-bold">{{ number_format($invoice->subtotal, 2) }} DH</td>
+                    </tr>
+                    <tr class="text-red-600">
+                        <td class="py-2.5 px-4 font-medium" colspan="2">Remise</td>
+                        <td class="py-2.5 px-4" colspan="2"></td>
+                        <td class="py-2.5 px-4 text-right font-bold">-{{ number_format($invoice->discount_amount, 2) }} DH</td>
+                    </tr>
+                    @endif
                     <tr class="border-t-2 border-slate-900 font-bold text-slate-900 bg-slate-50/50">
-                        <td class="py-4 px-4 text-base">Total TTC</td>
-                        <td class="py-4 px-4 text-center text-sm text-slate-600">{{ $invoice->items->count() }} article(s)</td>
-                        <td class="py-4 px-4"></td>
+                        <td class="py-4 px-4 text-base" colspan="2">Total TTC</td>
+                        <td class="py-4 px-4 text-center text-sm text-slate-600" colspan="2">{{ $invoice->items->count() }} article(s)</td>
                         <td class="py-4 px-4 text-right text-lg text-indigo-700 font-extrabold">{{ number_format($invoice->total, 2) }} DH</td>
                     </tr>
                 </tfoot>

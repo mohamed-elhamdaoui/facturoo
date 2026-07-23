@@ -11,6 +11,7 @@ class InvoiceItem extends Model
         'invoice_id',
         'product_id',
         'quantity',
+        'discount_percentage',
         'unit_price',
         'subtotal',
     ];
@@ -23,5 +24,10 @@ class InvoiceItem extends Model
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function getDiscountAmountAttribute(): float
+    {
+        return ($this->quantity * $this->unit_price) * ($this->discount_percentage / 100);
     }
 }
