@@ -84,6 +84,7 @@ CREATE TABLE `invoice_items` (
   `invoice_id` bigint unsigned NOT NULL,
   `product_id` bigint unsigned NOT NULL,
   `quantity` int NOT NULL,
+  `discount_percentage` int NOT NULL DEFAULT '0',
   `unit_price` decimal(10,2) NOT NULL,
   `subtotal` decimal(12,2) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -371,6 +372,7 @@ DROP TABLE IF EXISTS `invoices`;
 CREATE TABLE `invoices` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `total` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `discount_amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `client_id` bigint unsigned NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -442,7 +444,7 @@ CREATE TABLE `migrations` (
   `migration` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `migrations` (`id`,`migration`,`batch`) VALUES
 ('1','0001_01_01_000000_create_users_table','1'),
@@ -457,7 +459,8 @@ INSERT INTO `migrations` (`id`,`migration`,`batch`) VALUES
 ('10','2026_05_25_031144_add_stock_to_products_table','2'),
 ('11','2026_05_25_031931_create_stock_movements_table','2'),
 ('12','2026_05_25_061500_fix_pasta_categories','2'),
-('13','2026_06_24_222151_add_performance_indexes_to_tables','2');
+('13','2026_06_24_222151_add_performance_indexes_to_tables','2'),
+('14','2026_07_23_223500_add_discount_fields_to_invoices_and_items','3');
 
 DROP TABLE IF EXISTS `password_reset_tokens`;
 CREATE TABLE `password_reset_tokens` (
