@@ -1,5 +1,5 @@
 -- Production Backup of facturo-db
--- Generated: 2026-07-18T15:08:39.006Z
+-- Generated: 2026-07-11T23:17:30.351Z
 
 SET FOREIGN_KEY_CHECKS=0;
 SET SQL_MODE='NO_AUTO_VALUE_ON_ZERO';
@@ -7,8 +7,8 @@ SET NAMES utf8mb4;
 
 DROP TABLE IF EXISTS `cache`;
 CREATE TABLE `cache` (
-  `key` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `value` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `key` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `value` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
   `expiration` bigint NOT NULL,
   PRIMARY KEY (`key`),
   KEY `cache_expiration_index` (`expiration`)
@@ -18,8 +18,8 @@ CREATE TABLE `cache` (
 
 DROP TABLE IF EXISTS `cache_locks`;
 CREATE TABLE `cache_locks` (
-  `key` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `owner` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `key` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `owner` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `expiration` bigint NOT NULL,
   PRIMARY KEY (`key`),
   KEY `cache_locks_expiration_index` (`expiration`)
@@ -30,14 +30,14 @@ CREATE TABLE `cache_locks` (
 DROP TABLE IF EXISTS `clients`;
 CREATE TABLE `clients` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `phone` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `phone` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `clients_name_index` (`name`),
   KEY `clients_phone_index` (`phone`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `clients` (`id`,`name`,`phone`,`created_at`,`updated_at`) VALUES
 ('1','super sabl d\'or(al amal)','0666386072','2026-06-28 23:44:59','2026-06-28 23:47:49'),
@@ -56,20 +56,16 @@ INSERT INTO `clients` (`id`,`name`,`phone`,`created_at`,`updated_at`) VALUES
 ('15','super tarik(kayrawan)',NULL,'2026-07-09 23:22:18','2026-07-09 23:35:31'),
 ('16','super radi(dchira)','0662790348','2026-07-09 23:24:14','2026-07-09 23:24:14'),
 ('17','super sahara shop(kayrawan)','0642863720','2026-07-09 23:25:49','2026-07-09 23:35:04'),
-('18','super fahd(Elmassira)','0624459514','2026-07-10 21:08:09','2026-07-10 21:08:09'),
-('19','super arkha','0661766109','2026-07-18 10:21:11','2026-07-18 10:21:11'),
-('20','moustapha(diridik)','0662473395','2026-07-18 10:22:16','2026-07-18 10:22:16'),
-('21','oudraoui mehamed','0604765621','2026-07-18 10:23:48','2026-07-18 10:23:48'),
-('22','boujour_jaaini','0661403923','2026-07-18 10:47:57','2026-07-18 10:47:57');
+('18','super fahd(Elmassira)','0624459514','2026-07-10 21:08:09','2026-07-10 21:08:09');
 
 DROP TABLE IF EXISTS `failed_jobs`;
 CREATE TABLE `failed_jobs` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `uuid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `connection` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `queue` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `payload` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `exception` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `uuid` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `connection` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `queue` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `exception` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
   `failed_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `failed_jobs_uuid_unique` (`uuid`),
@@ -93,7 +89,7 @@ CREATE TABLE `invoice_items` (
   KEY `invoice_items_product_id_foreign` (`product_id`),
   CONSTRAINT `invoice_items_invoice_id_foreign` FOREIGN KEY (`invoice_id`) REFERENCES `invoices` (`id`) ON DELETE CASCADE,
   CONSTRAINT `invoice_items_product_id_foreign` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE RESTRICT
-) ENGINE=InnoDB AUTO_INCREMENT=327 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=286 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `invoice_items` (`id`,`invoice_id`,`product_id`,`quantity`,`unit_price`,`subtotal`,`created_at`,`updated_at`) VALUES
 ('56','4','7','24','12.30','295.20','2026-07-01 21:40:01','2026-07-01 21:40:01'),
@@ -333,39 +329,7 @@ INSERT INTO `invoice_items` (`id`,`invoice_id`,`product_id`,`quantity`,`unit_pri
 ('282','20','44','12','7.40','88.80','2026-07-10 21:14:47','2026-07-10 21:14:47'),
 ('283','20','7','12','12.50','150.00','2026-07-10 21:14:47','2026-07-10 21:14:47'),
 ('284','20','4','12','12.50','150.00','2026-07-10 21:14:47','2026-07-10 21:14:47'),
-('285','20','14','20','7.40','148.00','2026-07-10 21:14:47','2026-07-10 21:14:47'),
-('286','21','20','1','120.00','120.00','2026-07-18 10:30:23','2026-07-18 10:30:23'),
-('287','21','14','20','7.40','148.00','2026-07-18 10:30:23','2026-07-18 10:30:23'),
-('288','22','7','12','12.50','150.00','2026-07-18 10:33:26','2026-07-18 10:33:26'),
-('289','23','7','12','12.50','150.00','2026-07-18 10:39:51','2026-07-18 10:39:51'),
-('290','23','4','12','12.50','150.00','2026-07-18 10:39:51','2026-07-18 10:39:51'),
-('291','23','14','20','7.40','148.00','2026-07-18 10:39:51','2026-07-18 10:39:51'),
-('292','24','9','1','92.00','92.00','2026-07-18 10:45:15','2026-07-18 10:45:15'),
-('293','24','10','1','91.00','91.00','2026-07-18 10:45:15','2026-07-18 10:45:15'),
-('294','24','69','1','92.00','92.00','2026-07-18 10:45:15','2026-07-18 10:45:15'),
-('295','24','30','1','92.00','92.00','2026-07-18 10:45:15','2026-07-18 10:45:15'),
-('296','24','31','2','46.00','92.00','2026-07-18 10:45:15','2026-07-18 10:45:15'),
-('297','24','34','1','92.00','92.00','2026-07-18 10:45:15','2026-07-18 10:45:15'),
-('298','24','20','1','120.00','120.00','2026-07-18 10:45:15','2026-07-18 10:45:15'),
-('299','24','14','20','7.40','148.00','2026-07-18 10:45:15','2026-07-18 10:45:15'),
-('300','24','4','12','12.50','150.00','2026-07-18 10:45:15','2026-07-18 10:45:15'),
-('301','24','7','12','12.50','150.00','2026-07-18 10:45:15','2026-07-18 10:45:15'),
-('302','24','67','1','92.00','92.00','2026-07-18 10:45:15','2026-07-18 10:45:15'),
-('303','24','29','1','92.00','92.00','2026-07-18 10:45:15','2026-07-18 10:45:15'),
-('304','24','68','1','92.00','92.00','2026-07-18 10:45:15','2026-07-18 10:45:15'),
-('316','26','20','5','120.00','600.00','2026-07-18 10:57:37','2026-07-18 10:57:37');
-
-INSERT INTO `invoice_items` (`id`,`invoice_id`,`product_id`,`quantity`,`unit_price`,`subtotal`,`created_at`,`updated_at`) VALUES
-('317','26','18','30','18.50','555.00','2026-07-18 10:57:37','2026-07-18 10:57:37'),
-('318','26','17','36','7.40','266.40','2026-07-18 10:57:37','2026-07-18 10:57:37'),
-('319','26','14','40','7.40','296.00','2026-07-18 10:57:37','2026-07-18 10:57:37'),
-('320','26','7','24','12.50','300.00','2026-07-18 10:57:37','2026-07-18 10:57:37'),
-('321','26','4','24','12.50','300.00','2026-07-18 10:57:37','2026-07-18 10:57:37'),
-('322','26','50','12','7.40','88.80','2026-07-18 10:57:37','2026-07-18 10:57:37'),
-('323','26','51','12','7.40','88.80','2026-07-18 10:57:37','2026-07-18 10:57:37'),
-('324','26','41','36','7.40','266.40','2026-07-18 10:57:37','2026-07-18 10:57:37'),
-('325','26','54','12','7.40','88.80','2026-07-18 10:57:37','2026-07-18 10:57:37'),
-('326','26','55','12','13.50','162.00','2026-07-18 10:57:37','2026-07-18 10:57:37');
+('285','20','14','20','7.40','148.00','2026-07-10 21:14:47','2026-07-10 21:14:47');
 
 DROP TABLE IF EXISTS `invoices`;
 CREATE TABLE `invoices` (
@@ -378,7 +342,7 @@ CREATE TABLE `invoices` (
   KEY `invoices_client_id_foreign` (`client_id`),
   KEY `invoices_created_at_index` (`created_at`),
   CONSTRAINT `invoices_client_id_foreign` FOREIGN KEY (`client_id`) REFERENCES `clients` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `invoices` (`id`,`total`,`client_id`,`created_at`,`updated_at`) VALUES
 ('4','4239.20','1','2026-07-01 21:40:01','2026-07-01 21:40:02'),
@@ -397,22 +361,17 @@ INSERT INTO `invoices` (`id`,`total`,`client_id`,`created_at`,`updated_at`) VALU
 ('17','1500.40','16','2026-07-09 23:31:58','2026-07-09 23:31:58'),
 ('18','1766.80','17','2026-07-09 23:43:10','2026-07-09 23:43:11'),
 ('19','1918.00','15','2026-07-10 00:17:40','2026-07-10 00:17:40'),
-('20','1521.00','18','2026-07-10 21:14:46','2026-07-10 21:14:47'),
-('21','268.00','19','2026-07-18 10:30:23','2026-07-18 10:30:23'),
-('22','150.00','21','2026-07-18 10:33:26','2026-07-18 10:33:26'),
-('23','448.00','21','2026-07-18 10:39:51','2026-07-18 10:39:51'),
-('24','1395.00','20','2026-07-18 10:45:15','2026-07-18 10:45:15'),
-('26','3012.20','22','2026-07-18 10:57:37','2026-07-18 10:57:37');
+('20','1521.00','18','2026-07-10 21:14:46','2026-07-10 21:14:47');
 
 DROP TABLE IF EXISTS `job_batches`;
 CREATE TABLE `job_batches` (
-  `id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `total_jobs` int NOT NULL,
   `pending_jobs` int NOT NULL,
   `failed_jobs` int NOT NULL,
-  `failed_job_ids` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `options` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `failed_job_ids` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `options` mediumtext COLLATE utf8mb4_unicode_ci,
   `cancelled_at` int DEFAULT NULL,
   `created_at` int NOT NULL,
   `finished_at` int DEFAULT NULL,
@@ -424,8 +383,8 @@ CREATE TABLE `job_batches` (
 DROP TABLE IF EXISTS `jobs`;
 CREATE TABLE `jobs` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `queue` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `payload` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `queue` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
   `attempts` smallint unsigned NOT NULL,
   `reserved_at` int unsigned DEFAULT NULL,
   `available_at` int unsigned NOT NULL,
@@ -439,7 +398,7 @@ CREATE TABLE `jobs` (
 DROP TABLE IF EXISTS `migrations`;
 CREATE TABLE `migrations` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `migration` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -461,8 +420,8 @@ INSERT INTO `migrations` (`id`,`migration`,`batch`) VALUES
 
 DROP TABLE IF EXISTS `password_reset_tokens`;
 CREATE TABLE `password_reset_tokens` (
-  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `token` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -472,13 +431,13 @@ CREATE TABLE `password_reset_tokens` (
 DROP TABLE IF EXISTS `products`;
 CREATE TABLE `products` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `category` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `size` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `category` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `size` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `price` decimal(10,2) NOT NULL,
   `stock_quantity` int NOT NULL DEFAULT '0',
   `min_stock` int NOT NULL DEFAULT '5',
-  `image` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -487,81 +446,72 @@ CREATE TABLE `products` (
 ) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `products` (`id`,`name`,`category`,`size`,`price`,`stock_quantity`,`min_stock`,`image`,`created_at`,`updated_at`) VALUES
-('4','csc moy1kg','Couscous','1kg','12.50','864','5','products/rzAvbZMZ2SdOHvVJrEnS8mMoJCYzNL9pI5gjTzV2.jpg','2026-05-16 22:09:09','2026-07-18 10:57:37'),
-('7','csc fine1kg','Couscous','1kg','12.50','2004','5','products/0G51Q5K60vE7dLVX6NOKn2qKvB1faMi5OIVJS372.jpg','2026-05-16 22:36:59','2026-07-18 10:57:37'),
-('9','csc fine10kg','Couscous','10kg','92.00','575','5','products/yhhWbfAHCy0tSUgDZ0J2lkFF0LKYQ2iro04J2Zjt.jpg','2026-05-16 22:43:22','2026-07-18 10:45:15'),
-('10','csc moy10kg','Couscous','10kg','91.00','280','5','products/ED8MHAw8LnA78WpMzcaXY6jHjV9edkj9430N5LJ4.jpg','2026-05-16 22:44:58','2026-07-18 10:45:15'),
-('14','csc fine1/2 500g','Couscous','500g','7.40','1240','5','products/pEeRKYD8gD6ZNJY6D71GCrWGGYeuvV3VeuJ1UnOQ.jpg','2026-05-16 23:04:56','2026-07-18 10:57:37'),
+('4','csc moy1kg','Couscous','1kg','12.50','912','5','products/rzAvbZMZ2SdOHvVJrEnS8mMoJCYzNL9pI5gjTzV2.jpg','2026-05-16 22:09:09','2026-07-10 21:14:47'),
+('7','csc fine1kg','Couscous','1kg','12.50','2064','5','products/0G51Q5K60vE7dLVX6NOKn2qKvB1faMi5OIVJS372.jpg','2026-05-16 22:36:59','2026-07-10 21:14:47'),
+('9','csc fine10kg','Couscous','10kg','92.00','576','5','products/yhhWbfAHCy0tSUgDZ0J2lkFF0LKYQ2iro04J2Zjt.jpg','2026-05-16 22:43:22','2026-07-06 23:20:38'),
+('10','csc moy10kg','Couscous','10kg','91.00','281','5','products/ED8MHAw8LnA78WpMzcaXY6jHjV9edkj9430N5LJ4.jpg','2026-05-16 22:44:58','2026-07-09 23:27:22'),
+('14','csc fine1/2 500g','Couscous','500g','7.40','1340','5','products/pEeRKYD8gD6ZNJY6D71GCrWGGYeuvV3VeuJ1UnOQ.jpg','2026-05-16 23:04:56','2026-07-10 21:14:47'),
 ('16','seml gros1kg','Semoule','1kg','1.00','0','5','products/alSjRqQuIobe9KZP8qnKzLizjxKAyoONviLGecxj.png','2026-05-16 23:12:13','2026-05-18 23:38:46'),
-('17','ch_d\'ang500g','Cheveux d\'Ange','500g','7.40','636','5','products/4cIXivvwNArQq6NHKzb6Z9r9Yssm8e6PrIWd77Km.jpg','2026-05-17 03:59:24','2026-07-18 10:57:37'),
-('18','ch_d\'ang1kg','Cheveux d\'Ange','1kg','18.50','160','5','products/HigbC34ZiNNwVW0jH9pCvPkmfLMtcdZtVmIOmhoh.jpg','2026-05-17 04:00:05','2026-07-18 10:57:37'),
-('20','ch_d\'ang10kg','Cheveux d\'Ange','10kg','120.00','193','5','products/zR4nGGELzvfFwsHkciNZmmLsrIzoOL9c5c6BlGso.jpg','2026-05-17 04:00:43','2026-07-18 10:57:37'),
-('29','torsade 10kg','Pâtes vrac','10kg','92.00','24','5','products/ADk6hkZS2OM1BRX6BmBgq6Atcf1QubOmPbptoJpP.jpg','2026-05-17 04:07:38','2026-07-18 10:45:15'),
-('30','penne 10kg','Pâtes vrac','10kg','92.00','41','5','products/B6XWQL5yAURJUnNwBGF62SJ24BfR4lIp0cwyuau1.jpg','2026-05-17 04:08:05','2026-07-18 10:45:15'),
-('31','langue d\'oiseau 5kg','Pâtes vrac','5kg','46.00','132','5','products/NPVrChS2y4WbaqDG8dHqQggkUe6GHJsXuxBi4N4I.jpg','2026-05-17 04:08:28','2026-07-18 10:45:15'),
+('17','ch_d\'ang500g','Cheveux d\'Ange','500g','7.40','672','5','products/4cIXivvwNArQq6NHKzb6Z9r9Yssm8e6PrIWd77Km.jpg','2026-05-17 03:59:24','2026-07-10 21:14:46'),
+('18','ch_d\'ang1kg','Cheveux d\'Ange','1kg','18.50','190','5','products/HigbC34ZiNNwVW0jH9pCvPkmfLMtcdZtVmIOmhoh.jpg','2026-05-17 04:00:05','2026-07-10 21:14:46'),
+('20','ch_d\'ang10kg','Cheveux d\'Ange','10kg','120.00','200','5','products/zR4nGGELzvfFwsHkciNZmmLsrIzoOL9c5c6BlGso.jpg','2026-05-17 04:00:43','2026-07-10 00:17:40'),
+('29','torsade 10kg','Pâtes vrac','10kg','92.00','25','5','products/ADk6hkZS2OM1BRX6BmBgq6Atcf1QubOmPbptoJpP.jpg','2026-05-17 04:07:38','2026-07-08 00:06:49'),
+('30','penne 10kg','Pâtes vrac','10kg','92.00','42','5','products/B6XWQL5yAURJUnNwBGF62SJ24BfR4lIp0cwyuau1.jpg','2026-05-17 04:08:05','2026-07-06 23:20:38'),
+('31','langue d\'oiseau 5kg','Pâtes vrac','5kg','46.00','134','5','products/NPVrChS2y4WbaqDG8dHqQggkUe6GHJsXuxBi4N4I.jpg','2026-05-17 04:08:28','2026-07-06 23:20:39'),
 ('32','etoiles 5kg','Pâtes vrac','5kg','46.00','96','5','products/kU1IcwcAAKOPmiDJ6YtMtE2Pm2iTt4KeaKbSCKyh.jpg','2026-05-17 04:16:49','2026-07-06 23:20:39'),
 ('33','petit plomb 10kg','Pâtes vrac','10kg','92.00','29','5','products/TFwFjmWTMKiGPIV23hSuzjYznSYIyE56ywvJiK0a.jpg','2026-05-17 04:18:11','2026-07-06 23:20:38'),
-('34','verm gros10kg','Pâtes vrac','10kg','92.00','77','5','products/tPN1M8aBTBjHdssUtBQMnSO0q445WTKMsVi02IkA.jpg','2026-05-17 04:18:31','2026-07-18 10:45:15'),
+('34','verm gros10kg','Pâtes vrac','10kg','92.00','78','5','products/tPN1M8aBTBjHdssUtBQMnSO0q445WTKMsVi02IkA.jpg','2026-05-17 04:18:31','2026-07-06 23:20:39'),
 ('35','verm fine 10kg','Pâtes vrac','10kg','92.00','23','5','products/oj6YAUf1UgkDAd1JsYWexoY7uZj7XGka1Oj1rowx.jpg','2026-05-17 04:19:43','2026-07-06 23:20:38'),
 ('36','verm moy 10kg','Pâtes vrac','10kg','92.00','42','5','products/480ZQDdx7MQwA9TPGwNisJPM4bI3GXUdehinQ4tP.jpg','2026-05-17 04:20:01','2026-07-08 00:06:49'),
 ('37','code 10kg','Pâtes vrac','10kg','92.00','56','5','products/MTgvXex6AKHHh4XydiSnmeSeRr8flxDm7egw16ee.jpg','2026-05-17 04:20:19','2026-07-06 23:20:39'),
 ('38','code rayes 10kg','Pâtes vrac','10kg','92.00','65','5','products/Q9gDCyW9XS8m3sAT0E620UoINFibiyyLD2RjjG8O.jpg','2026-05-17 04:20:41','2026-07-06 23:20:39'),
 ('39','coquilles 10kg','Pâtes vrac','10kg','92.00','34','5','products/VxpJmwkotShMbxSvFDJt1jZoYAhcM841DmIynktr.jpg','2026-05-17 04:20:56','2026-07-06 23:20:39'),
 ('40','Fleur 2kg','Farine','2kg','0.01','0','5','products/KcY22XniOtQYCLF7XLXYxxDnrtrZc0eIwnFB3Qpd.jpg','2026-05-17 22:44:06','2026-05-18 00:05:44'),
-('41','torsade500g','Pâtes ptc','500g','7.40','1044','5','products/wxOeEtvubYFcLTigzMtEAzbW6wO8QiUrq0Lr7knD.jpg','2026-05-18 00:20:00','2026-07-18 10:57:37'),
+('41','torsade500g','Pâtes ptc','500g','7.40','1080','5','products/wxOeEtvubYFcLTigzMtEAzbW6wO8QiUrq0Lr7knD.jpg','2026-05-18 00:20:00','2026-07-10 21:14:46'),
 ('43','langue d\'oiseau 500g','Pâtes ptc','500g','7.40','300','5',NULL,'2026-05-18 00:21:52','2026-07-10 21:14:47'),
 ('44','etoiles 500g','Pâtes ptc','500g','7.40','312','5','products/g0BfOM329mdLYyXfe9YkYPeqYZ2uu0aBgTkL3j92.jpg','2026-05-18 00:22:10','2026-07-10 21:14:47'),
 ('46','verm moy 500g','Pâtes ptc','500g','7.40','420','5','products/YfGsTLYkAQWDqLEm8etuw6ohc1MM7YLSPC30sNk7.jpg','2026-05-18 00:23:05','2026-07-10 21:14:47'),
 ('47','verm fine 500g','Pâtes ptc','500g','7.40','144','5','products/KpCtxdAKF3I7Yui39oG3tviAv8tB2t1z5SXdXlvL.jpg','2026-05-18 00:23:25','2026-07-09 23:43:10'),
 ('48','verm gros 500g','Pâtes ptc','500g','7.40','312','5','products/EDshGw55rbUFAIHdhI3aTVyfcBlOQnaKi0iVRDrd.jpg','2026-05-18 00:23:41','2026-07-10 21:14:47'),
 ('49','codes 500g','Pâtes ptc','500g','7.40','288','5','products/qQ0Odw1O3hFypSH0NSguizvK0h0Jly9KRv9kohZI.jpg','2026-05-18 00:24:17','2026-07-10 21:14:46'),
-('50','code rayes 500g','Pâtes ptc','500g','7.40','276','5','products/ZeYVpAosQS99LyrTFdBj2fiPboHzFysFRECxWWft.jpg','2026-05-18 00:24:37','2026-07-18 10:57:37'),
-('51','coquilles 500g','Pâtes ptc','500g','7.40','276','5','products/X2OOCMViSk0tO72TkDGymDNg7v016hrsw9T0S13T.jpg','2026-05-18 00:24:54','2026-07-18 10:57:37'),
-('54','annelini500g','Pâtes ptc','500g','7.40','48','5','products/fQkctmUHdNFZ9JsupY8eN4Huj2ICt5bcXJ6UeruQ.jpg','2026-05-18 00:25:58','2026-07-18 10:57:37'),
-('55','farafallini 500g','Pâtes ptc','500g','13.50','24','5','products/yjqHMgpnQcIMPPE4eeEHn081rjNxmXAwkyYWOHJS.jpg','2026-05-18 00:26:21','2026-07-18 10:57:37'),
+('50','code rayes 500g','Pâtes ptc','500g','7.40','288','5','products/ZeYVpAosQS99LyrTFdBj2fiPboHzFysFRECxWWft.jpg','2026-05-18 00:24:37','2026-07-10 21:14:46'),
+('51','coquilles 500g','Pâtes ptc','500g','7.40','288','5','products/X2OOCMViSk0tO72TkDGymDNg7v016hrsw9T0S13T.jpg','2026-05-18 00:24:54','2026-07-10 21:14:46'),
+('54','annelini500g','Pâtes ptc','500g','7.40','60','5','products/fQkctmUHdNFZ9JsupY8eN4Huj2ICt5bcXJ6UeruQ.jpg','2026-05-18 00:25:58','2026-07-10 21:14:46'),
+('55','farafallini 500g','Pâtes ptc','500g','13.50','36','5','products/yjqHMgpnQcIMPPE4eeEHn081rjNxmXAwkyYWOHJS.jpg','2026-05-18 00:26:21','2026-07-10 00:17:40'),
 ('61','csc aman fine 10kg','Amane','10kg','84.00','0','5','products/DHrGbjA7ZfVV8hrQ4VD6t53m573AwYHIA2GDhKYS.jpg','2026-05-18 20:00:50','2026-05-18 22:14:26'),
 ('63','csc balboula1kg','Couscous','1kg','13.00','84','5','products/yRE14y5ColnWABLqmCMolPOg380ruStixXHrFPRN.jpg','2026-05-18 21:37:52','2026-07-06 23:09:27'),
 ('65','csc berkouks 1kg','Couscous',NULL,'18.60','0','5','products/Ka5EUNOXI5SDzhx1KKELdoOmWh821EAjT8Ww90ah.jpg','2026-06-28 22:49:42','2026-07-06 23:09:27'),
-('67','pennette 10kg','Pâtes vrac',NULL,'92.00','30','5','products/TWIVbhcktzjLutpSQtkSLJXqDfMw8MeNWCJPjjzs.jpg','2026-06-28 23:07:05','2026-07-18 10:45:15'),
-('68','torsette 10kg','Pâtes vrac',NULL,'92.00','39','5','products/M2RQlmAeNuQrPMzhilQ1u3uKvkQyOsN18wovKUy8.jpg','2026-06-28 23:07:36','2026-07-18 10:45:15'),
-('69','plombs 10kg','Pâtes vrac',NULL,'92.00','25','5','products/aK9A1pdjyvsEtiUnivChIX44VnVlVZ7OISjTQBtN.jpg','2026-06-28 23:08:18','2026-07-18 10:45:15');
+('67','pennette 10kg','Pâtes vrac',NULL,'92.00','31','5','products/TWIVbhcktzjLutpSQtkSLJXqDfMw8MeNWCJPjjzs.jpg','2026-06-28 23:07:05','2026-07-06 23:20:38'),
+('68','torsette 10kg','Pâtes vrac',NULL,'92.00','40','5','products/M2RQlmAeNuQrPMzhilQ1u3uKvkQyOsN18wovKUy8.jpg','2026-06-28 23:07:36','2026-07-06 23:20:38'),
+('69','plombs 10kg','Pâtes vrac',NULL,'92.00','26','5','products/aK9A1pdjyvsEtiUnivChIX44VnVlVZ7OISjTQBtN.jpg','2026-06-28 23:08:18','2026-07-06 23:20:38');
 
 DROP TABLE IF EXISTS `sessions`;
 CREATE TABLE `sessions` (
-  `id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `user_id` bigint unsigned DEFAULT NULL,
-  `ip_address` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `user_agent` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  `payload` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `ip_address` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `user_agent` text COLLATE utf8mb4_unicode_ci,
+  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
   `last_activity` int NOT NULL,
   PRIMARY KEY (`id`),
   KEY `sessions_user_id_index` (`user_id`),
   KEY `sessions_last_activity_index` (`last_activity`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO `sessions` (`id`,`user_id`,`ip_address`,`user_agent`,`payload`,`last_activity`) VALUES
-('9WXz4QdWXrHy2jZj5uH57PCtaGa8h50o7dWf1FSi',NULL,'45.148.10.67','TLM-Audit-Scanner/1.0','eyJfdG9rZW4iOiIxNmlhUlk4TGhLVmlpOHIzcWNEQndjdmxLbTV1STZXSG5wU0dEQjhmIiwidXJsIjp7ImludGVuZGVkIjoiaHR0cHM6XC9cL2ZhY3R1cm9vLmRvY2tob3N0aW5nLmRldlwvP3BocGluZm89MSJ9LCJfcHJldmlvdXMiOnsidXJsIjoiaHR0cHM6XC9cL2ZhY3R1cm9vLmRvY2tob3N0aW5nLmRldlwvP3BocGluZm89MSIsInJvdXRlIjoiZGFzaGJvYXJkIn0sIl9mbGFzaCI6eyJvbGQiOltdLCJuZXciOltdfX0=','1784379198'),
-('9xsIsJwWUtwaboSlKh1Vtkd7bls0iTomf5gpkIVA',NULL,'52.230.100.152','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36','eyJfdG9rZW4iOiJ4aUJQdURxQm42NHVvTnJ3QjhvYzRYdW45S0FYVEY4RmM5aXZQSnNhIiwidXJsIjp7ImludGVuZGVkIjoiaHR0cHM6XC9cL2ZhY3R1cm9vLmRvY2tob3N0aW5nLmRldiJ9LCJfcHJldmlvdXMiOnsidXJsIjoiaHR0cHM6XC9cL2ZhY3R1cm9vLmRvY2tob3N0aW5nLmRldlwvbG9naW4iLCJyb3V0ZSI6ImxvZ2luIn0sIl9mbGFzaCI6eyJvbGQiOltdLCJuZXciOltdfX0=','1784372035'),
-('FbTJw89zJBBXpkuYtdiBcQoxAd2ex3CtflzHrn6I',NULL,'45.148.10.67','TLM-Audit-Scanner/1.0','eyJfdG9rZW4iOiJYUlU0cWwwOU9obUk4SGx1NUpJZGd5eHd6WU9sdjliTVVPSjczcDhxIiwiX3ByZXZpb3VzIjp7InVybCI6Imh0dHBzOlwvXC9mYWN0dXJvby5kb2NraG9zdGluZy5kZXZcL2xvZ2luP3BwPWVudiIsInJvdXRlIjoibG9naW4ifSwiX2ZsYXNoIjp7Im9sZCI6W10sIm5ldyI6W119fQ==','1784379208'),
-('ph1wmicenGQzteYMFMUVLudKqfTlLAtGwD2WxGfS','1','105.79.103.226','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36','eyJfdG9rZW4iOiI3TnVReVRQejJBTEttWExMSFlNU1MzZFc1VXdWNjFIQ2xnUDUyTEo2IiwidXJsIjpbXSwiX3ByZXZpb3VzIjp7InVybCI6Imh0dHBzOlwvXC9mYWN0dXJvby5kb2NraG9zdGluZy5kZXZcL2ludm9pY2VzXC9jcmVhdGUiLCJyb3V0ZSI6Imludm9pY2VzLmNyZWF0ZSJ9LCJfZmxhc2giOnsib2xkIjpbXSwibmV3IjpbXX0sImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjoxfQ==','1784372666'),
-('QHvjQcHgApzY00gBacklKGt7PLPRvpK07Y9Xmpnm',NULL,'45.148.10.67','TLM-Audit-Scanner/1.0','eyJfdG9rZW4iOiJZeDR1NTFUNXZXTGhUVGs4SzZjSWZ5UWVEY01oSjNTWklVczJlSzNwIiwidXJsIjp7ImludGVuZGVkIjoiaHR0cHM6XC9cL2ZhY3R1cm9vLmRvY2tob3N0aW5nLmRldlwvcHJvZHVjdHMifSwiX3ByZXZpb3VzIjp7InVybCI6Imh0dHBzOlwvXC9mYWN0dXJvby5kb2NraG9zdGluZy5kZXZcL3Byb2R1Y3RzIiwicm91dGUiOiJwcm9kdWN0cy5pbmRleCJ9LCJfZmxhc2giOnsib2xkIjpbXSwibmV3IjpbXX19','1784379210'),
-('R2YjgxTvgNX9EUhFwc31n2PM98gmIeOlkFeAHpg6',NULL,'45.148.10.67','TLM-Audit-Scanner/1.0','eyJfdG9rZW4iOiJtSlpQTGR5TGJIVnFPcnhreklTOVpUZkVralJ3QmVQaFZyalJ1Nm1JIiwiX3ByZXZpb3VzIjp7InVybCI6Imh0dHBzOlwvXC9mYWN0dXJvby5kb2NraG9zdGluZy5kZXZcL2xvZ2luIiwicm91dGUiOiJsb2dpbiJ9LCJfZmxhc2giOnsib2xkIjpbXSwibmV3IjpbXX19','1784379208'),
-('W7poo5d8y835if9wnYpvNlQQQcfT7CHusMEMKDZq',NULL,'45.148.10.67','TLM-Audit-Scanner/1.0','eyJfdG9rZW4iOiJ1cEJ1ZFJsOHNUeloyMnVDSVc4ZXFWcUhkZ0RJU2pFdWF4UDJ0MFREIiwidXJsIjp7ImludGVuZGVkIjoiaHR0cHM6XC9cL2ZhY3R1cm9vLmRvY2tob3N0aW5nLmRldlwvP3BwPWVudiJ9LCJfcHJldmlvdXMiOnsidXJsIjoiaHR0cHM6XC9cL2ZhY3R1cm9vLmRvY2tob3N0aW5nLmRldlwvP3BwPWVudiIsInJvdXRlIjoiZGFzaGJvYXJkIn0sIl9mbGFzaCI6eyJvbGQiOltdLCJuZXciOltdfX0=','1784379198'),
-('X08E23ZLSmVmNgvRztGPtNSiODtIJnN9DnInDhC7',NULL,'45.148.10.67','TLM-Audit-Scanner/1.0','eyJfdG9rZW4iOiJUMnV6ZDhMRDJaa2djQk1MZ0xpaWtjUmFpekVWcU9TeUdWNTk3bGNqIiwidXJsIjp7ImludGVuZGVkIjoiaHR0cHM6XC9cL2ZhY3R1cm9vLmRvY2tob3N0aW5nLmRldiJ9LCJfcHJldmlvdXMiOnsidXJsIjoiaHR0cHM6XC9cL2ZhY3R1cm9vLmRvY2tob3N0aW5nLmRldiIsInJvdXRlIjoiZGFzaGJvYXJkIn0sIl9mbGFzaCI6eyJvbGQiOltdLCJuZXciOltdfX0=','1784379195'),
-('Xm9FTPBuXF4BrnVoOjxseufFUzDi0nni3nOgNtWp','1','105.74.65.239','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36','eyJfdG9rZW4iOiJLd0VNd09rVlBKa1dxOEVKeXhlUlF3V09mOWtRbnY0QXNUNE40aExIIiwidXJsIjpbXSwiX3ByZXZpb3VzIjp7InVybCI6Imh0dHBzOlwvXC9mYWN0dXJvby5kb2NraG9zdGluZy5kZXZcL2NsaWVudHMiLCJyb3V0ZSI6ImNsaWVudHMuaW5kZXgifSwiX2ZsYXNoIjp7Im9sZCI6W10sIm5ldyI6W119LCJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI6MX0=','1784386906');
+-- No data in sessions
 
 DROP TABLE IF EXISTS `stock_movements`;
 CREATE TABLE `stock_movements` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `product_id` bigint unsigned NOT NULL,
-  `type` enum('entrée','sortie') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `type` enum('entrée','sortie') COLLATE utf8mb4_unicode_ci NOT NULL,
   `quantity` int NOT NULL,
-  `reason` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `reason` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `stock_movements_product_id_foreign` (`product_id`),
   CONSTRAINT `stock_movements_product_id_foreign` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=436 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=384 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `stock_movements` (`id`,`product_id`,`type`,`quantity`,`reason`,`created_at`) VALUES
 ('3','14','entrée','1','entrée manuelle','2026-06-28 15:27:53'),
@@ -958,70 +908,16 @@ INSERT INTO `stock_movements` (`id`,`product_id`,`type`,`quantity`,`reason`,`cre
 ('380','44','sortie','12','Facture #20','2026-07-10 21:14:47'),
 ('381','7','sortie','12','Facture #20','2026-07-10 21:14:47'),
 ('382','4','sortie','12','Facture #20','2026-07-10 21:14:47'),
-('383','14','sortie','20','Facture #20','2026-07-10 21:14:47'),
-('384','20','sortie','1','Facture #21','2026-07-18 10:30:23'),
-('385','14','sortie','20','Facture #21','2026-07-18 10:30:23'),
-('386','7','sortie','12','Facture #22','2026-07-18 10:33:26'),
-('387','7','sortie','12','Facture #23','2026-07-18 10:39:51'),
-('388','4','sortie','12','Facture #23','2026-07-18 10:39:51'),
-('389','14','sortie','20','Facture #23','2026-07-18 10:39:51'),
-('390','9','sortie','1','Facture #24','2026-07-18 10:45:15'),
-('391','10','sortie','1','Facture #24','2026-07-18 10:45:15'),
-('392','69','sortie','1','Facture #24','2026-07-18 10:45:15'),
-('393','30','sortie','1','Facture #24','2026-07-18 10:45:15'),
-('394','31','sortie','2','Facture #24','2026-07-18 10:45:15'),
-('395','34','sortie','1','Facture #24','2026-07-18 10:45:15'),
-('396','20','sortie','1','Facture #24','2026-07-18 10:45:15'),
-('397','14','sortie','20','Facture #24','2026-07-18 10:45:15'),
-('398','4','sortie','12','Facture #24','2026-07-18 10:45:15'),
-('399','7','sortie','12','Facture #24','2026-07-18 10:45:15'),
-('400','67','sortie','1','Facture #24','2026-07-18 10:45:15'),
-('401','29','sortie','1','Facture #24','2026-07-18 10:45:15'),
-('402','68','sortie','1','Facture #24','2026-07-18 10:45:15');
-
-INSERT INTO `stock_movements` (`id`,`product_id`,`type`,`quantity`,`reason`,`created_at`) VALUES
-('403','20','sortie','1','Facture #25','2026-07-18 10:51:19'),
-('404','18','sortie','30','Facture #25','2026-07-18 10:51:19'),
-('405','17','sortie','36','Facture #25','2026-07-18 10:51:19'),
-('406','14','sortie','40','Facture #25','2026-07-18 10:51:19'),
-('407','7','sortie','24','Facture #25','2026-07-18 10:51:19'),
-('408','4','sortie','24','Facture #25','2026-07-18 10:51:19'),
-('409','50','sortie','12','Facture #25','2026-07-18 10:51:19'),
-('410','51','sortie','12','Facture #25','2026-07-18 10:51:19'),
-('411','41','sortie','36','Facture #25','2026-07-18 10:51:19'),
-('412','54','sortie','12','Facture #25','2026-07-18 10:51:19'),
-('413','55','sortie','12','Facture #25','2026-07-18 10:51:19'),
-('414','20','entrée','1','Annulation Facture #25','2026-07-18 10:54:54'),
-('415','18','entrée','30','Annulation Facture #25','2026-07-18 10:54:54'),
-('416','17','entrée','36','Annulation Facture #25','2026-07-18 10:54:54'),
-('417','14','entrée','40','Annulation Facture #25','2026-07-18 10:54:54'),
-('418','7','entrée','24','Annulation Facture #25','2026-07-18 10:54:54'),
-('419','4','entrée','24','Annulation Facture #25','2026-07-18 10:54:54'),
-('420','50','entrée','12','Annulation Facture #25','2026-07-18 10:54:54'),
-('421','51','entrée','12','Annulation Facture #25','2026-07-18 10:54:54'),
-('422','41','entrée','36','Annulation Facture #25','2026-07-18 10:54:54'),
-('423','54','entrée','12','Annulation Facture #25','2026-07-18 10:54:54'),
-('424','55','entrée','12','Annulation Facture #25','2026-07-18 10:54:54'),
-('425','20','sortie','5','Facture #26','2026-07-18 10:57:37'),
-('426','18','sortie','30','Facture #26','2026-07-18 10:57:37'),
-('427','17','sortie','36','Facture #26','2026-07-18 10:57:37'),
-('428','14','sortie','40','Facture #26','2026-07-18 10:57:37'),
-('429','7','sortie','24','Facture #26','2026-07-18 10:57:37'),
-('430','4','sortie','24','Facture #26','2026-07-18 10:57:37'),
-('431','50','sortie','12','Facture #26','2026-07-18 10:57:37'),
-('432','51','sortie','12','Facture #26','2026-07-18 10:57:37'),
-('433','41','sortie','36','Facture #26','2026-07-18 10:57:37'),
-('434','54','sortie','12','Facture #26','2026-07-18 10:57:37'),
-('435','55','sortie','12','Facture #26','2026-07-18 10:57:37');
+('383','14','sortie','20','Facture #20','2026-07-10 21:14:47');
 
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `email_verified_at` timestamp NULL DEFAULT NULL,
-  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `remember_token` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
